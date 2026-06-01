@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PROJECT_DIR="${PROJECT_DIR:-$PWD}"
+SPACK_VIEW="$PROJECT_DIR/.spack-env/view"
+
+export PATH="$SPACK_VIEW/bin:$PATH"
+export LD_LIBRARY_PATH="$SPACK_VIEW/lib:$SPACK_VIEW/lib64:${LD_LIBRARY_PATH:-}"
+export PKG_CONFIG_PATH="$SPACK_VIEW/lib/pkgconfig:$SPACK_VIEW/lib64/pkgconfig:$SPACK_VIEW/share/pkgconfig:${PKG_CONFIG_PATH:-}"
+export CMAKE_PREFIX_PATH="$SPACK_VIEW:${CMAKE_PREFIX_PATH:-}"
+
+LOG="/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/.vscode/rterm-debug.log"
+
+{
+  echo "===== $(date) ====="
+  echo "PWD=$PWD"
+  echo "ARGS=$*"
+  echo "PATH=$PATH"
+  echo "LD_LIBRARY_PATH=${LD_LIBRARY_PATH:-}"
+  echo "PKG_CONFIG_PATH=${PKG_CONFIG_PATH:-}"
+
+  which R || true
+  which Rscript || true
+  which gcc || true
+  which g++ || true
+
+  R CMD config CC || true
+  R CMD config CXX17 || true
+
+  which arf || true
+} >> "$LOG" 2>&1
+
+exec arf "$@"%
