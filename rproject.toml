@@ -18,4 +18,7 @@ repositories = [
 dependencies = [
     #{ name = "sess", git = "https://github.com/REditorSupport/vscode-R/tree/master/sess", branch = "master" },
     "maestro",
+    "cronR",
+    "here",
+    "glue",
 ]

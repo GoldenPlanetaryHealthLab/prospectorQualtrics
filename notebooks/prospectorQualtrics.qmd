@@ -1,5 +1,19 @@
 ---
 title: "prospectorQualtrics"
+format: html
+filters:
+    - sorting-hat
+    - ripper
+extensions:
+    sorting-hat:
+        keep:
+            - r
+        verbose: true
+ripper:                                                                                                                              
+    include-yaml: false
+    output-dir: "../pipelines/"
+    output-name: "my_pipe.R"
+    script-links-position: "none"
 ---
 
 This prospector is designed to dynamically fetch

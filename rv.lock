@@ -76,6 +76,15 @@ force_source = false
 dependencies = []
 
 [[packages]]
+name = "cronR"
+version = "0.6.5"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    "digest",
+]
+
+[[packages]]
 name = "desc"
 version = "1.4.3"
 source = { repository = "https://cran.r-project.org/" }
@@ -84,6 +93,13 @@ dependencies = [
     "cli",
     "R6",
 ]
+
+[[packages]]
+name = "digest"
+version = "0.6.39"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = []
 
 [[packages]]
 name = "dplyr"
@@ -131,6 +147,15 @@ version = "1.8.1"
 source = { repository = "https://cran.r-project.org/" }
 force_source = false
 dependencies = []
+
+[[packages]]
+name = "here"
+version = "1.0.2"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    { name = "rprojroot", requirement = "(>= 2.1.0)" },
+]
 
 [[packages]]
 name = "highr"
