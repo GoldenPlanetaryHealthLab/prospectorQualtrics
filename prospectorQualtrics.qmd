@@ -1,7 +1,0 @@
----
-title: "prospectorQualtrics"
----
-
-This prospector is designed to dynamically fetch
-and ingest data from our Qualtrics survey projects.
-

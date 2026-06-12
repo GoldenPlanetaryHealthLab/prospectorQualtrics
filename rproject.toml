@@ -6,7 +6,8 @@ r_version = "4.5"
 # The alias is only used in this file if you want to specifically require a dependency to come from a certain repository.
 # Example: { alias = "PPM", url = "https://packagemanager.posit.co/cran/latest" },
 repositories = [
-
+    { alias = "CRAN", url = "https://cran.r-project.org/" },
+    { alias = "PPM", url = "https://packagemanager.posit.co/cran/2026-06-01" },
 ]
 
 # A list of packages to install and any additional configuration
@@ -15,5 +16,6 @@ repositories = [
     # {name = "dplyr", repository = "CRAN"},
     # {name = "dplyr", git = "https://github.com/tidyverse/dplyr.git", tag = "v1.1.4"},
 dependencies = [
-    { name = "sess", git = "https://github.com/REditorSupport/vscode-R/tree/master/sess", commit = "20f32fe" },
+    #{ name = "sess", git = "https://github.com/REditorSupport/vscode-R/tree/master/sess", branch = "master" },
+    "maestro",
 ]

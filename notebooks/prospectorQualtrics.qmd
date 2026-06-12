@@ -1,0 +1,103 @@
+---
+title: "prospectorQualtrics"
+---
+
+This prospector is designed to dynamically fetch
+and ingest data from our Qualtrics survey projects.
+
+## Setup
+
+We first need to access the Qualtrics API to retrieve any new data:
+
+```{r}
+print("Setting up Qualtrics API connection...")
+connection_to_api <- "Connected"
+```
+
+We can access the exact Qualtrics project that has all
+of our data upload records using its ID:
+
+```{r}
+print("Accessing Qualtrics project...")
+qualtrics_project_id <- "1234567890"
+print(paste("Project ID:", qualtrics_project_id))
+survey_df <- data.frame(
+  respondent_id = c("R1", "R2", "R3"),
+  response = c("Yes", "No", "Yes"),
+  data_gt_50mb = c(FALSE, FALSE, TRUE),
+  data_path_globus = c(NA, NA, "globus://path/to/large/data/R3")
+)
+print("Survey data retrieved:")
+```
+
+We should also get the corresponding google sheet that tracks whether or
+not the response has been processed:
+
+```{r}
+gsheet <- "url to google sheet"
+sheet_df <- data.frame(
+  respondent_id = c("R1", "R2", "R3"),
+  processed = c(FALSE, FALSE, FALSE)
+)
+```
+
+## Processing
+
+We process a response by checking whether the data is expected to
+be larger than 50mb; if not, we can directly download it to 
+the gold_mine qualtrics folder from the qualtrics response object ID:
+
+```{r}
+sheet_df %>%
+    filter(!processed) %>%
+    left_join(survey_df, by = "respondent_id") %>%
+    rowwise() %>%
+    mutate(
+        download_path = ifelse(data_gt_50mb == FALSE, paste0("gold_mine/qualtrics/", respondent_id, ".csv"), data_path_globus)
+    ) %>%
+    ungroup() -> unprocessed_responses
+
+
+print("Unprocessed responses with download paths:")
+print(unprocessed_responses)
+```
+
+For responses with data larger than 50mb, we can use the globus path to
+download the data to the gold_mine qualtrics folder, and for
+responses with data smaller than 50mb, we can directly download it from the qualtrics response object ID to the gold_mine qualtrics folder. We can use
+a global function called `download_data` that takes in the download path 
+and the respondent ID to handle both cases:
+
+```{r}
+download_data <- function(download_path, respondent_id) {
+    if (grepl("globus://", download_path)) {
+        print(paste("Downloading large data for respondent", respondent_id, "from globus path:", download_path))
+        # Code to download from globus would go here
+    } else {
+        print(paste("Downloading small data for respondent", respondent_id, "from Qualtrics response object ID:", download_path))
+        # Code to download from Qualtrics would go here
+    }
+}
+
+unprocessed_responses %>%
+    rowwise() %>%
+    mutate(
+        download_result = download_data(download_path, respondent_id)
+    ) -> processed_responses
+```
+
+And after processing, we must update the google sheet to mark the response as processed:
+
+```{r}
+updated_sheet_df <- sheet_df %>%
+    left_join(processed_responses, by = "respondent_id") %>%
+    mutate(processed = ifelse(!is.na(download_result), TRUE, FALSE))
+
+print("Updated sheet with processed status:")
+print(updated_sheet_df)
+```
+
+This pipeline will be run on a regular schedule, so technically
+this counts as a dynamic daily ETL pipeline, so it should
+be run with `maestro` and SCRONTAB. See this notebook for 
+more details on how this was set up: [SCRONTAB Jobs with Maestro](maestro_scrontab_job.qmd).
