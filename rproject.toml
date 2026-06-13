@@ -26,4 +26,5 @@ dependencies = [
     "qualtRics",
     "googlesheets4",
     "quarto",
+    "git2r",
 ]
