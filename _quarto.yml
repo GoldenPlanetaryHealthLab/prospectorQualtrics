@@ -1,5 +1,19 @@
 project:
   title: "prospectorQualtrics"
+  type: website
+  render:
+    - notebooks/*.qmd
+    - index.qmd
+  output-dir: "docs"
 
-
+website:
+  title: "Qualtrics Prospector"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: notebooks/10_pipelines.qmd
+        text: Whole Pipeline
+      - href: notebooks/01_process_qualtrics_data.qmd
+        text: Process Qualtrics Data Internals
 
