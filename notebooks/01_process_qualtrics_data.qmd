@@ -29,6 +29,7 @@ and ingest data from our Qualtrics survey projects.
 library(dplyr)
 library(stringr)
 library(glue)
+library(tidyr)
 library(qualtRics)
 library(googledrive)
 library(googlesheets4)
@@ -36,8 +37,10 @@ library(here)
 library(testthat)
 library(logger)
 
-# params <- list(testing = TRUE) # for testing purposes
-testing <- params$testing
+if(!exists("params$testing")) {
+  testing <- interactive()
+}
+
 log_file <- here("pipelines/logs/maestro.log")
 
 if (testing) {
@@ -68,8 +71,8 @@ of our data upload records using its ID:
 
 ```{r}
 log_info("Accessing Qualtrics project...")
-qualtrics_project_id <- all_surveys() |> 
-  filter(str_detect(name, "Data Intake Form")) |> 
+qualtrics_project_id <- all_surveys() |>
+  dplyr::filter(str_detect(name, "Data Intake Form")) |> 
   pull(id)
 
 log_info("Qualtrics project ID retrieved")
@@ -85,7 +88,6 @@ for all things Google Drive access:
 ```{r}
 log_info("Setting up Google Sheets access...")
 
-
 sa <- Sys.getenv("GOOGLEDRIVE_SERVICE_ACCOUNT_FILE")
 gsheet <- Sys.getenv("GOOGLESHEETS_SHEET_URL")
 
@@ -99,6 +101,11 @@ test_that("Google API credentials are set", {
 })
 
 sheet_df <- read_sheet(gsheet)
+
+test_that("Google Sheet data retrieved correctly", {
+  expect_true(nrow(sheet_df) > 0)
+  expect_true(all(c("response_id", "processed") %in% colnames(sheet_df)))
+})
 ```
 
 ## Processing
@@ -109,8 +116,22 @@ the gold_mine qualtrics folder from the qualtrics response object ID:
 
 ```{r}
 sheet_df |>
-    filter(!processed) |>
-    left_join(survey_df, by = "respondent_id") |>
+  mutate(
+    gsheets_index = 1:n(), 
+    processed = replace_na(processed, FALSE),
+    data_gt_50_mb = case_when(
+      data_gt_50_mb == "Yes" ~ TRUE,
+      data_gt_50_mb == "No" ~ FALSE,
+      TRUE ~ NA
+    )) |>
+  dplyr::filter(!processed) %>%
+  full_join(., survey_df, by = join_by("response_id" == "ResponseId")) -> unprocessed_responses
+
+log_info("Unprocessed responses identified: {nrow(unprocessed_responses)}")
+
+unprocessed_responses |>
+  dplyr::filter(!data_gt_50_mb) |>
+  dplyr::select(response_id,)
     rowwise() |>
     mutate(
         download_path = ifelse(data_gt_50mb == FALSE, paste0("gold_mine/qualtrics/", respondent_id, ".csv"), data_path_globus)
