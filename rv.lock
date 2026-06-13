@@ -330,6 +330,13 @@ force_source = false
 dependencies = []
 
 [[packages]]
+name = "git2r"
+version = "0.36.2"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = []
+
+[[packages]]
 name = "glue"
 version = "1.8.1"
 source = { repository = "https://cran.r-project.org/" }
