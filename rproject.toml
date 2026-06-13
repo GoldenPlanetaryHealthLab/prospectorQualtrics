@@ -21,4 +21,9 @@ dependencies = [
     "cronR",
     "here",
     "glue",
+    "rmarkdown",
+    "languageserver",
+    "qualtRics",
+    "googlesheets4",
+    "quarto",
 ]

@@ -1,25 +1,33 @@
 ---
-title: "prospectorQualtrics"
-format: html
+title: "Process Qualtrics Data Uploads"
+embed-resources: true
 filters:
     - sorting-hat
     - ripper
 extensions:
     sorting-hat:
-        keep:
-            - r
-        verbose: true
-ripper:                                                                                                                              
-    include-yaml: false
-    output-dir: "../pipelines/"
-    output-name: "my_pipe.R"
-    script-links-position: "none"
+      keep:
+        - r
+      verbose: true
+    ripper:
+      include-yaml: false
+      output-dir: "../R"
+      output-name: "process_qualtrics_data"
+      script-links-position: "none"
 ---
 
 This prospector is designed to dynamically fetch
 and ingest data from our Qualtrics survey projects.
 
 ## Setup
+
+```{r}
+library(dplyr)
+library(glue)
+library(qualtRics)
+library(googlesheets4)
+library(here)
+```
 
 We first need to access the Qualtrics API to retrieve any new data:
 
@@ -62,13 +70,13 @@ be larger than 50mb; if not, we can directly download it to
 the gold_mine qualtrics folder from the qualtrics response object ID:
 
 ```{r}
-sheet_df %>%
-    filter(!processed) %>%
-    left_join(survey_df, by = "respondent_id") %>%
-    rowwise() %>%
+sheet_df |>
+    filter(!processed) |>
+    left_join(survey_df, by = "respondent_id") |>
+    rowwise() |>
     mutate(
         download_path = ifelse(data_gt_50mb == FALSE, paste0("gold_mine/qualtrics/", respondent_id, ".csv"), data_path_globus)
-    ) %>%
+    ) |>
     ungroup() -> unprocessed_responses
 
 
@@ -93,8 +101,8 @@ download_data <- function(download_path, respondent_id) {
     }
 }
 
-unprocessed_responses %>%
-    rowwise() %>%
+unprocessed_responses |>
+    rowwise() |>
     mutate(
         download_result = download_data(download_path, respondent_id)
     ) -> processed_responses
@@ -103,8 +111,8 @@ unprocessed_responses %>%
 And after processing, we must update the google sheet to mark the response as processed:
 
 ```{r}
-updated_sheet_df <- sheet_df %>%
-    left_join(processed_responses, by = "respondent_id") %>%
+updated_sheet_df <- sheet_df |>
+    left_join(processed_responses, by = "respondent_id") |>
     mutate(processed = ifelse(!is.na(download_result), TRUE, FALSE))
 
 print("Updated sheet with processed status:")
@@ -114,4 +122,4 @@ print(updated_sheet_df)
 This pipeline will be run on a regular schedule, so technically
 this counts as a dynamic daily ETL pipeline, so it should
 be run with `maestro` and SCRONTAB. See this notebook for 
-more details on how this was set up: [SCRONTAB Jobs with Maestro](maestro_scrontab_job.qmd).
+more details on how this was set up: [SCRONTAB Jobs with Maestro](10_pipelines.qmd).

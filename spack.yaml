@@ -25,6 +25,7 @@ spack:
   - libxml2
   - libarchive
   - libx11
+  - r-cairo
   view: true
   concretizer:
     unify: true
