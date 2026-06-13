@@ -98,7 +98,7 @@ test_that("Google API credentials are set", {
 
 })
 
-sheet_df <- read_sheet(gsheet) # this doesnt work
+sheet_df <- read_sheet(gsheet)
 ```
 
 ## Processing
