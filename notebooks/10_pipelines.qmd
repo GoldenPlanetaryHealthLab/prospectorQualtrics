@@ -63,8 +63,3 @@ process_data_pipeline <- function() {
 This function will be executed according to the schedule defined in the comments. The content of this routine can
 be viewed in the [Process Qualtrics Data Uploads notebook](01_process_qualtrics_data.qmd).
 
-# Tracking: Git committing the logs
-
-We can add a git commit and push step to as an additional pipeline,
-saved in another notebook.
-

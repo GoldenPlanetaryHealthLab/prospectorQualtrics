@@ -27,4 +27,9 @@ dependencies = [
     "googlesheets4",
     "quarto",
     "fledge",
+    "logger",
+    "testthat",
+    "stringr",
+    "googledrive",
+    "httpuv",
 ]

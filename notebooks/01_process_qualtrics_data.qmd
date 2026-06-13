@@ -14,6 +14,10 @@ extensions:
       output-dir: "../R"
       output-name: "process_qualtrics_data"
       script-links-position: "none"
+execute: 
+  eval: false
+params:
+  testing: false
 ---
 
 This prospector is designed to dynamically fetch
@@ -23,44 +27,78 @@ and ingest data from our Qualtrics survey projects.
 
 ```{r}
 library(dplyr)
+library(stringr)
 library(glue)
 library(qualtRics)
+library(googledrive)
 library(googlesheets4)
 library(here)
+library(testthat)
+library(logger)
+
+# params <- list(testing = TRUE) # for testing purposes
+testing <- params$testing
+log_file <- here("pipelines/logs/maestro.log")
+
+if (testing) {
+  log_threshold(DEBUG)
+  log_appender(appender_tee(log_file))
+  log_info("Running in testing mode: logs will be printed to console and saved to file.")
+} else {
+  log_threshold(INFO)
+  log_appender(appender_file(log_file))
+    log_info("Running in production mode: logs will be saved to file only.")
+}
 ```
 
 We first need to access the Qualtrics API to retrieve any new data:
 
 ```{r}
-print("Setting up Qualtrics API connection...")
-connection_to_api <- "Connected"
+log_info("Setting up Qualtrics API connection...")
+
+test_that("Qualtrics API credentials are set", {
+  expect_true(Sys.getenv("QUALTRICS_API_KEY") != "")
+  expect_true(Sys.getenv("QUALTRICS_BASE_URL") != "")
+  expect_no_error(all_surveys())
+})
 ```
 
 We can access the exact Qualtrics project that has all
 of our data upload records using its ID:
 
 ```{r}
-print("Accessing Qualtrics project...")
-qualtrics_project_id <- "1234567890"
-print(paste("Project ID:", qualtrics_project_id))
-survey_df <- data.frame(
-  respondent_id = c("R1", "R2", "R3"),
-  response = c("Yes", "No", "Yes"),
-  data_gt_50mb = c(FALSE, FALSE, TRUE),
-  data_path_globus = c(NA, NA, "globus://path/to/large/data/R3")
-)
-print("Survey data retrieved:")
+log_info("Accessing Qualtrics project...")
+qualtrics_project_id <- all_surveys() |> 
+  filter(str_detect(name, "Data Intake Form")) |> 
+  pull(id)
+
+log_info("Qualtrics project ID retrieved")
+survey_df <- fetch_survey(qualtrics_project_id)
+log_info("Survey data retrieved: dimensions - {nrow(survey_df)} rows, {ncol(survey_df)} columns")
 ```
 
 We should also get the corresponding google sheet that tracks whether or
-not the response has been processed:
+not the response has been processed. Fortunately, we
+have already set up a data engineering google service account
+for all things Google Drive access:
 
 ```{r}
-gsheet <- "url to google sheet"
-sheet_df <- data.frame(
-  respondent_id = c("R1", "R2", "R3"),
-  processed = c(FALSE, FALSE, FALSE)
-)
+log_info("Setting up Google Sheets access...")
+
+
+sa <- Sys.getenv("GOOGLEDRIVE_SERVICE_ACCOUNT_FILE")
+gsheet <- Sys.getenv("GOOGLESHEETS_SHEET_URL")
+
+test_that("Google API credentials are set", {
+
+  expect_true(nzchar(sa))
+  expect_true(file.exists(sa))
+  expect_no_error(drive_auth(path = sa))
+  expect_no_error(gs4_auth(path = sa))
+
+})
+
+sheet_df <- read_sheet(gsheet) # this doesnt work
 ```
 
 ## Processing

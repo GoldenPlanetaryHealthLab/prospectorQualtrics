@@ -36,7 +36,7 @@ With some SCRONTAB config we'll need:
 library(glue)
 mail_user <- Sys.getenv("SLACK_EMAIL")
 runtime <- Sys.time()
-git_cmd <- "git commit -a -m 'cron job commit @ {runtime}' && git push"
+git_cmd <- glue("git commit -a -m 'cron job commit @ {runtime}' && git push")
 glue(
 '#SCRON -J Maestro-prospectorQualtrics', 
 '#SCRON -p hsph', 
@@ -60,7 +60,8 @@ schedule <- build_schedule()
 
 run_schedule(
   schedule,
-  orch_frequency = "10 minutes"
+  orch_frequency = "10s minutes",
+  log_to_file = here("pipelines/logs/maestro.log")
 )
 ```
 
