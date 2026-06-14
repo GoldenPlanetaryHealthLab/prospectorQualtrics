@@ -60,7 +60,7 @@ schedule <- build_schedule()
 
 run_schedule(
   schedule,
-  orch_frequency = "10 minutes",
+  orch_frequency = "1 day",
   log_to_file = here("pipelines/logs/maestro.log")
 )
 ```
