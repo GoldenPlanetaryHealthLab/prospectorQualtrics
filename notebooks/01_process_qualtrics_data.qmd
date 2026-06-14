@@ -112,7 +112,10 @@ test_that("Google Sheet data retrieved correctly", {
 
 We process a response by checking whether the data is expected to
 be larger than 50mb; if not, we can directly download it to 
-the gold_mine qualtrics folder from the qualtrics response object ID:
+the gold_mine qualtrics folder from the qualtrics response object ID.
+So first, we must separate those two cases by joining the 
+google sheet with the qualtrics survey data on the response 
+ID, and then filtering for unprocessed responses:
 
 ```{r}
 sheet_df |>
@@ -130,17 +133,12 @@ sheet_df |>
 log_info("Unprocessed responses identified: {nrow(unprocessed_responses)}")
 
 unprocessed_responses |>
-  dplyr::filter(!data_gt_50_mb) |>
-  dplyr::select(response_id,)
-    rowwise() |>
-    mutate(
-        download_path = ifelse(data_gt_50mb == FALSE, paste0("gold_mine/qualtrics/", respondent_id, ".csv"), data_path_globus)
-    ) |>
-    ungroup() -> unprocessed_responses
+  dplyr::filter(!data_gt_50_mb) -> direct_download_candidates
 
+unprocessed_responses |>
+  dplyr::filter(data_gt_50_mb) -> globus_download_candidates
 
-print("Unprocessed responses with download paths:")
-print(unprocessed_responses)
+log_info("Download Candidates: {nrow(direct_download_candidates)} direct, {nrow(globus_download_candidates)} globus")
 ```
 
 For responses with data larger than 50mb, we can use the globus path to
