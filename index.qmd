@@ -43,6 +43,7 @@ glue(
 '#SCRON -t 00:10:00', 
 '#SCRON -o {here("pipelines/logs/cron.out")}', 
 '#SCRON -e {here("pipelines/logs/cron.err")}', 
+'#SCRON --open-mode=append',
 '#SCRON --mail-type=FAIL,END', 
 '#SCRON --mail-user={mail_user}', 
 '{cron_cmd$min} {cron_cmd$hour} {cron_cmd$day_of_month} {cron_cmd$month} {cron_cmd$day_of_week} {cron_cmd$command} && {git_cmd}',

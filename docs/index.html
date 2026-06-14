@@ -214,10 +214,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="st">'#SCRON -t 00:10:00'</span>, </span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="st">'#SCRON -o {here("pipelines/logs/cron.out")}'</span>, </span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="st">'#SCRON -e {here("pipelines/logs/cron.err")}'</span>, </span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="st">'#SCRON --mail-type=FAIL,END'</span>, </span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="st">'#SCRON --mail-user={mail_user}'</span>, </span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="st">'{cron_cmd$min} {cron_cmd$hour} {cron_cmd$day_of_month} {cron_cmd$month} {cron_cmd$day_of_week} {cron_cmd$command} &amp;&amp; {git_cmd}'</span>,</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="at">.sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="st">'#SCRON --open-mode=append'</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="st">'#SCRON --mail-type=FAIL,END'</span>, </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="st">'#SCRON --mail-user={mail_user}'</span>, </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="st">'{cron_cmd$min} {cron_cmd$hour} {cron_cmd$day_of_month} {cron_cmd$month} {cron_cmd$day_of_week} {cron_cmd$command} &amp;&amp; {git_cmd}'</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="at">.sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#SCRON -J Maestro-prospectorQualtrics
 #SCRON -p hsph
@@ -225,6 +226,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 #SCRON -t 00:10:00
 #SCRON -o /n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/pipelines/logs/cron.out
 #SCRON -e /n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/pipelines/logs/cron.err
+#SCRON --open-mode=append
 #SCRON --mail-type=FAIL,END
 #SCRON --mail-user=
 0 9 * * * cd '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics' &amp;&amp; /n/home03/ttapera/software/spack/opt/spack/linux-icelake/r-4.5.1-munmhwpvanxog4vieqta3cvvdaarsali/rlib/R/bin/Rscript '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/run.R'  &gt;&gt; '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/pipelines/logs/orchestrator.log' 2&gt;&amp;1 &amp;&amp; git commit -a -m "Maestro run" &amp;&amp; git push</code></pre>
@@ -255,21 +257,21 @@ frequently as specified.
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-── [2026-06-14 20:45:47]
+── [2026-06-14 21:01:46]
 Running pipelines ▶ 
 ℹ process_data_pipeline</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Running the maestro pipeline..."
-Test passed with 3 successes 🎊.
+Test passed with 3 successes 😸.
 
   |                                                                            
   |                                                                      |   0%
   |                                                                            
   |======================================================================| 100%
-Test passed with 4 successes 🎊.
-Test passed with 2 successes 🥇.
-Test passed with 2 successes 😀.
+Test passed with 4 successes 😸.
+Test passed with 2 successes 🎉.
+Test passed with 2 successes 🌈.
 ── Error: Google Sheet updated correctly after processing ──────────────────────
 Error in `expect_shape(updated_sheet_df, nrow = nrow(sheet_df), ncol = ncol(sheet_df))`: Exactly one of `nrow`, `ncol`, or `dim` must be supplied.
 ✖ `nrow` and `ncol` were supplied together.
@@ -280,11 +282,11 @@ Backtrace:
  3.     └─rlang::abort(msg, call = .call)</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✖ process_data_pipeline [34.6s]
+<pre><code>✖ process_data_pipeline [35.4s]
 
 
-── [2026-06-14 20:45:47]
-Pipeline execution completed ■ | 34.581 sec elapsed 
+── [2026-06-14 21:01:46]
+Pipeline execution completed ■ | 35.472 sec elapsed 
 ✔ 0 successes | ! 0 warnings | ✖ 1 error | ◼ 1 total
 ✖ Use `last_run_errors()` to show pipeline errors.
 ────────────────────────────────────────────────────────────────────────────────
@@ -300,7 +302,7 @@ Pipe name | Next scheduled run
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glue</span>(<span class="st">"Last rendered: {Sys.time()}"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Last rendered: 2026-06-14 16:46:22.360328</code></pre>
+<pre><code>Last rendered: 2026-06-14 17:02:21.792838</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
