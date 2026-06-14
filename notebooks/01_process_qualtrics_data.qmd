@@ -40,8 +40,10 @@ box::use(
   R/downloaders[download_from_qualtrics]
 )
 
-if(!exists("params$testing")) {
-  testing <- interactive()
+testing <- if (exists("params", inherits = FALSE) && !is.null(params$testing)) {
+  isTRUE(params$testing)
+} else {
+  interactive()
 }
 
 log_file <- here("pipelines/logs/maestro.log")
