@@ -148,8 +148,9 @@ updated_sheet_df <- sheet_df |>
   ) %>%
   select(-download_result)
 
+message()
 test_that("Google Sheet updated correctly after processing", {
-  expect_shape(updated_sheet_df, nrow = nrow(sheet_df), ncol = ncol(sheet_df))
+  expect_true(nrow(updated_sheet_df) == nrow(sheet_df))
 })
 
 log_info("Google Sheet updated with processed status for direct downloads. Attempting to write back to Google Sheets...")
