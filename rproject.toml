@@ -16,7 +16,7 @@ repositories = [
     # {name = "dplyr", repository = "CRAN"},
     # {name = "dplyr", git = "https://github.com/tidyverse/dplyr.git", tag = "v1.1.4"},
 dependencies = [
-    #{ name = "sess", git = "https://github.com/REditorSupport/vscode-R/tree/master/sess", branch = "master" },
+    { name = "sess", path = "/n/home03/ttapera/.vscode-server/extensions/reditorsupport.r-3.0.0-rc.0/sess"},
     "maestro",
     "cronR",
     "here",
@@ -32,4 +32,7 @@ dependencies = [
     "stringr",
     "googledrive",
     "httpuv",
+    "janitor",
+    "devtools",
+    "box",
 ]

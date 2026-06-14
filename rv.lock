@@ -107,6 +107,13 @@ dependencies = [
 ]
 
 [[packages]]
+name = "box"
+version = "1.2.2"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = []
+
+[[packages]]
 name = "brew"
 version = "1.0-10"
 source = { repository = "https://cran.r-project.org/" }
@@ -268,6 +275,35 @@ dependencies = [
 ]
 
 [[packages]]
+name = "devtools"
+version = "2.5.2"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    { name = "usethis", requirement = "(>= 3.2.1)" },
+    { name = "cli", requirement = "(>= 3.6.6)" },
+    { name = "desc", requirement = "(>= 1.4.3)" },
+    { name = "ellipsis", requirement = "(>= 0.3.3)" },
+    { name = "fs", requirement = "(>= 2.1.0)" },
+    { name = "lifecycle", requirement = "(>= 1.0.5)" },
+    { name = "memoise", requirement = "(>= 2.0.1)" },
+    { name = "miniUI", requirement = "(>= 0.1.2)" },
+    { name = "pak", requirement = "(>= 0.9.5)" },
+    { name = "pkgbuild", requirement = "(>= 1.4.8)" },
+    { name = "pkgdown", requirement = "(>= 2.2.0)" },
+    { name = "pkgload", requirement = "(>= 1.5.2)" },
+    { name = "profvis", requirement = "(>= 0.4.0)" },
+    { name = "rcmdcheck", requirement = "(>= 1.4.0)" },
+    { name = "rlang", requirement = "(>= 1.2.0)" },
+    { name = "roxygen2", requirement = "(>= 7.3.3)" },
+    { name = "rversions", requirement = "(>= 3.0.0)" },
+    { name = "sessioninfo", requirement = "(>= 1.2.3)" },
+    { name = "testthat", requirement = "(>= 3.3.2)" },
+    { name = "urlchecker", requirement = "(>= 1.0.1)" },
+    { name = "withr", requirement = "(>= 3.0.2)" },
+]
+
+[[packages]]
 name = "diffobj"
 version = "0.3.6"
 source = { repository = "https://cran.r-project.org/" }
@@ -282,6 +318,24 @@ version = "0.6.39"
 source = { repository = "https://cran.r-project.org/" }
 force_source = false
 dependencies = []
+
+[[packages]]
+name = "downlit"
+version = "0.4.5"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    "brio",
+    "desc",
+    "digest",
+    "evaluate",
+    "fansi",
+    "memoise",
+    "rlang",
+    "vctrs",
+    "withr",
+    "yaml",
+]
 
 [[packages]]
 name = "dplyr"
@@ -303,8 +357,24 @@ dependencies = [
 ]
 
 [[packages]]
+name = "ellipsis"
+version = "0.3.3"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    { name = "rlang", requirement = "(>= 1.1.7)" },
+]
+
+[[packages]]
 name = "evaluate"
 version = "1.0.5"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = []
+
+[[packages]]
+name = "fansi"
+version = "1.0.7"
 source = { repository = "https://cran.r-project.org/" }
 force_source = false
 dependencies = []
@@ -511,6 +581,19 @@ dependencies = [
 ]
 
 [[packages]]
+name = "htmlwidgets"
+version = "1.6.4"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    { name = "htmltools", requirement = "(>= 0.5.7)" },
+    { name = "jsonlite", requirement = "(>= 0.9.16)" },
+    { name = "knitr", requirement = "(>= 1.8)" },
+    "rmarkdown",
+    "yaml",
+]
+
+[[packages]]
 name = "httpuv"
 version = "1.6.17"
 source = { repository = "https://cran.r-project.org/" }
@@ -577,6 +660,26 @@ version = "1.5.1"
 source = { repository = "https://cran.r-project.org/" }
 force_source = false
 dependencies = []
+
+[[packages]]
+name = "janitor"
+version = "2.2.1"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    { name = "dplyr", requirement = "(>= 1.0.0)" },
+    "hms",
+    "lifecycle",
+    "lubridate",
+    "magrittr",
+    "purrr",
+    "rlang",
+    "stringi",
+    "stringr",
+    { name = "snakecase", requirement = "(>= 0.9.2)" },
+    { name = "tidyselect", requirement = "(>= 1.0.0)" },
+    { name = "tidyr", requirement = "(>= 0.7.0)" },
+]
 
 [[packages]]
 name = "jquerylib"
@@ -727,6 +830,16 @@ force_source = false
 dependencies = []
 
 [[packages]]
+name = "miniUI"
+version = "0.1.2"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    { name = "shiny", requirement = "(>= 0.13)" },
+    { name = "htmltools", requirement = "(>= 0.3)" },
+]
+
+[[packages]]
 name = "openssl"
 version = "2.4.2"
 source = { repository = "https://cran.r-project.org/" }
@@ -738,6 +851,13 @@ dependencies = [
 [[packages]]
 name = "otel"
 version = "0.2.0"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = []
+
+[[packages]]
+name = "pak"
+version = "0.10.0"
 source = { repository = "https://cran.r-project.org/" }
 force_source = false
 dependencies = []
@@ -775,6 +895,34 @@ version = "2.0.3"
 source = { repository = "https://cran.r-project.org/" }
 force_source = false
 dependencies = []
+
+[[packages]]
+name = "pkgdown"
+version = "2.2.0"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    { name = "bslib", requirement = "(>= 0.5.1)" },
+    { name = "callr", requirement = "(>= 3.7.3)" },
+    { name = "cli", requirement = "(>= 3.6.1)" },
+    { name = "desc", requirement = "(>= 1.4.0)" },
+    { name = "downlit", requirement = "(>= 0.4.4)" },
+    "fontawesome",
+    { name = "fs", requirement = "(>= 1.4.0)" },
+    { name = "httr2", requirement = "(>= 1.0.2)" },
+    "jsonlite",
+    "lifecycle",
+    "openssl",
+    { name = "purrr", requirement = "(>= 1.0.0)" },
+    { name = "ragg", requirement = "(>= 1.4.0)" },
+    { name = "rlang", requirement = "(>= 1.1.4)" },
+    { name = "rmarkdown", requirement = "(>= 2.27)" },
+    "tibble",
+    "whisker",
+    { name = "withr", requirement = "(>= 2.4.3)" },
+    { name = "xml2", requirement = "(>= 1.3.1)" },
+    { name = "yaml", requirement = "(>= 2.3.9)" },
+]
 
 [[packages]]
 name = "pkgload"
@@ -815,6 +963,17 @@ force_source = false
 dependencies = [
     { name = "ps", requirement = "(>= 1.9.3)" },
     "R6",
+]
+
+[[packages]]
+name = "profvis"
+version = "0.4.0"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    { name = "htmlwidgets", requirement = "(>= 0.3.2)" },
+    { name = "rlang", requirement = "(>= 1.1.0)" },
+    "vctrs",
 ]
 
 [[packages]]
@@ -910,11 +1069,41 @@ dependencies = [
 ]
 
 [[packages]]
+name = "ragg"
+version = "1.5.2"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    { name = "systemfonts", requirement = "(>= 1.0.3)" },
+    { name = "textshaping", requirement = "(>= 0.3.0)" },
+]
+
+[[packages]]
 name = "rappdirs"
 version = "0.3.4"
 source = { repository = "https://cran.r-project.org/" }
 force_source = false
 dependencies = []
+
+[[packages]]
+name = "rcmdcheck"
+version = "1.4.0"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    { name = "callr", requirement = "(>= 3.1.1.9000)" },
+    { name = "cli", requirement = "(>= 3.0.0)" },
+    "curl",
+    { name = "desc", requirement = "(>= 1.2.0)" },
+    "digest",
+    "pkgbuild",
+    "prettyunits",
+    "R6",
+    "rprojroot",
+    { name = "sessioninfo", requirement = "(>= 1.1.1)" },
+    "withr",
+    "xopen",
+]
 
 [[packages]]
 name = "readr"
@@ -1022,6 +1211,15 @@ force_source = false
 dependencies = []
 
 [[packages]]
+name = "rversions"
+version = "3.0.0"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    "curl",
+]
+
+[[packages]]
 name = "sass"
 version = "0.4.10"
 source = { repository = "https://cran.r-project.org/" }
@@ -1035,6 +1233,56 @@ dependencies = [
 ]
 
 [[packages]]
+name = "sess"
+version = "3.0.0"
+source = { path = "/n/home03/ttapera/.vscode-server/extensions/reditorsupport.r-3.0.0-rc.0/sess" }
+force_source = true
+dependencies = [
+    { name = "processx", requirement = "(>= 3.5.0)" },
+    "later",
+    "jsonlite",
+    "rstudioapi",
+    "svglite",
+]
+
+[[packages]]
+name = "sessioninfo"
+version = "1.2.4"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    { name = "cli", requirement = "(>= 3.1.0)" },
+]
+
+[[packages]]
+name = "shiny"
+version = "1.13.0"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    { name = "bslib", requirement = "(>= 0.6.0)" },
+    { name = "cachem", requirement = "(>= 1.1.0)" },
+    "cli",
+    { name = "commonmark", requirement = "(>= 2.0.0)" },
+    { name = "fastmap", requirement = "(>= 1.1.1)" },
+    { name = "fontawesome", requirement = "(>= 0.4.0)" },
+    { name = "glue", requirement = "(>= 1.3.2)" },
+    { name = "htmltools", requirement = "(>= 0.5.4)" },
+    { name = "httpuv", requirement = "(>= 1.5.2)" },
+    { name = "jsonlite", requirement = "(>= 0.9.16)" },
+    { name = "later", requirement = "(>= 1.0.0)" },
+    { name = "lifecycle", requirement = "(>= 0.2.0)" },
+    { name = "mime", requirement = "(>= 0.3)" },
+    "otel",
+    { name = "promises", requirement = "(>= 1.5.0)" },
+    { name = "R6", requirement = "(>= 2.0)" },
+    { name = "rlang", requirement = "(>= 0.4.10)" },
+    "sourcetools",
+    "withr",
+    "xtable",
+]
+
+[[packages]]
 name = "sjlabelled"
 version = "1.2.0"
 source = { repository = "https://cran.r-project.org/" }
@@ -1043,6 +1291,23 @@ dependencies = [
     "insight",
     "datawizard",
 ]
+
+[[packages]]
+name = "snakecase"
+version = "0.11.1"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    "stringr",
+    "stringi",
+]
+
+[[packages]]
+name = "sourcetools"
+version = "0.1.7-2"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = []
 
 [[packages]]
 name = "stringi"
@@ -1083,11 +1348,38 @@ dependencies = [
 ]
 
 [[packages]]
+name = "svglite"
+version = "2.2.2"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    "base64enc",
+    "cli",
+    "lifecycle",
+    { name = "rlang", requirement = "(>= 1.1.0)" },
+    { name = "systemfonts", requirement = "(>= 1.3.0)" },
+    { name = "textshaping", requirement = "(>= 0.3.0)" },
+    "cpp11",
+]
+
+[[packages]]
 name = "sys"
 version = "3.4.3"
 source = { repository = "https://cran.r-project.org/" }
 force_source = false
 dependencies = []
+
+[[packages]]
+name = "systemfonts"
+version = "1.3.2"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    "base64enc",
+    "jsonlite",
+    "lifecycle",
+    { name = "cpp11", requirement = "(>= 0.2.1)" },
+]
 
 [[packages]]
 name = "testthat"
@@ -1111,6 +1403,18 @@ dependencies = [
     { name = "rlang", requirement = "(>= 1.1.6)" },
     { name = "waldo", requirement = "(>= 0.6.2)" },
     { name = "withr", requirement = "(>= 3.0.2)" },
+]
+
+[[packages]]
+name = "textshaping"
+version = "1.0.5"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    "lifecycle",
+    "stringi",
+    { name = "systemfonts", requirement = "(>= 1.3.0)" },
+    { name = "cpp11", requirement = "(>= 0.2.1)" },
 ]
 
 [[packages]]
@@ -1194,6 +1498,17 @@ source = { repository = "https://cran.r-project.org/" }
 force_source = false
 dependencies = [
     { name = "cpp11", requirement = "(>= 0.5.2)" },
+]
+
+[[packages]]
+name = "urlchecker"
+version = "1.0.1"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    "cli",
+    "curl",
+    "xml2",
 ]
 
 [[packages]]
@@ -1327,6 +1642,22 @@ dependencies = [
 [[packages]]
 name = "xmlparsedata"
 version = "1.0.5"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = []
+
+[[packages]]
+name = "xopen"
+version = "1.0.1"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    "processx",
+]
+
+[[packages]]
+name = "xtable"
+version = "1.8-8"
 source = { repository = "https://cran.r-project.org/" }
 force_source = false
 dependencies = []

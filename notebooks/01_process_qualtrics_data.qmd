@@ -36,6 +36,9 @@ library(googlesheets4)
 library(here)
 library(testthat)
 library(logger)
+box::use(
+  R/downloaders[download_from_qualtrics]
+)
 
 if(!exists("params$testing")) {
   testing <- interactive()
@@ -143,40 +146,77 @@ log_info("Download Candidates: {nrow(direct_download_candidates)} direct, {nrow(
 
 For responses with data larger than 50mb, we can use the globus path to
 download the data to the gold_mine qualtrics folder, and for
-responses with data smaller than 50mb, we can directly download it from the qualtrics response object ID to the gold_mine qualtrics folder. We can use
-a global function called `download_data` that takes in the download path 
-and the respondent ID to handle both cases:
+responses with data smaller than 50mb, we can directly download it from the qualtrics response object ID to the gold_mine qualtrics folder. Here is the
+case that we have data smaller than 50mb:
 
 ```{r}
-download_data <- function(download_path, respondent_id) {
-    if (grepl("globus://", download_path)) {
-        print(paste("Downloading large data for respondent", respondent_id, "from globus path:", download_path))
-        # Code to download from globus would go here
-    } else {
-        print(paste("Downloading small data for respondent", respondent_id, "from Qualtrics response object ID:", download_path))
-        # Code to download from Qualtrics would go here
-    }
-}
+if(nrow(direct_download_candidates) > 0){
+  log_info("Processing direct downloads for {nrow(direct_download_candidates)} candidates...")
 
-unprocessed_responses |>
+  direct_download_candidates |>
+    {
+      if(testing){
+        # just taking a sample for testing
+        slice_sample(., n = min(3, nrow(.)))
+      } else {
+        .
+      }
+    } |> 
     rowwise() |>
     mutate(
-        download_result = download_data(download_path, respondent_id)
-    ) -> processed_responses
+      download_result = download_from_qualtrics(
+        file_id = Q25_Id,
+        filename = Q25_Name,
+        qualtrics_project_id = qualtrics_project_id,
+        response_id = response_id,
+        response_date = StartDate,
+        responder_id = case_when(
+          !is.na(Q12) ~ Q12,
+          !is.na(Q14) ~ Q14,
+          !is.na(Q15) ~ Q15,
+          !is.na(Q17) ~ Q17,
+          !is.na(uploader_name) ~ uploader_name,
+          TRUE ~ "Unknown"
+        )
+      )
+    ) -> direct_download_results
+  log_info("Direct download attempts completed for {nrow(direct_download_results)} candidates")
+  test_that("Qualtrics direct download process completed successfully", {
+    expect_true(all(!is.na(direct_download_results$download_result)))
+    expect_true(all(file.exists(direct_download_results$download_result)))
+  })
+} else {
+  log_info("No direct download candidates to process.")
+  direct_download_results <- direct_download_candidates %>%
+    mutate(download_result = NA_character_)
+}
 ```
+
+## Write Back Results
 
 And after processing, we must update the google sheet to mark the response as processed:
 
 ```{r}
 updated_sheet_df <- sheet_df |>
-    left_join(processed_responses, by = "respondent_id") |>
-    mutate(processed = ifelse(!is.na(download_result), TRUE, FALSE))
+  left_join(
+    direct_download_results |> select(response_id, download_result),
+    by = join_by(response_id)
+  ) |>
+  mutate(
+    processed = case_when(
+      !is.na(download_result) ~ TRUE,
+      TRUE ~ processed
+    )
+  ) %>%
+  select(-download_result)
 
-print("Updated sheet with processed status:")
-print(updated_sheet_df)
+test_that("Google Sheet updated correctly after processing", {
+  expect_shape(updated_sheet_df, nrow = nrow(sheet_df), ncol = ncol(sheet_df))
+})
+
+log_info("Google Sheet updated with processed status for direct downloads. Attempting to write back to Google Sheets...")
+range_write(gsheet, updated_sheet_df, range = "A1", col_names = TRUE)
+log_info("Google Sheet updated successfully with processed status for direct downloads.")
 ```
 
-This pipeline will be run on a regular schedule, so technically
-this counts as a dynamic daily ETL pipeline, so it should
-be run with `maestro` and SCRONTAB. See this notebook for 
-more details on how this was set up: [SCRONTAB Jobs with Maestro](10_pipelines.qmd).
+And with that, we're done!

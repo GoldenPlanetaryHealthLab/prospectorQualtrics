@@ -4099,150 +4099,177 @@ vertical-align: -.125em;
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: &#39;dplyr&#39;</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from &#39;package:stats&#39;:
-
-    filter, lag</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from &#39;package:base&#39;:
-
-    intersect, setdiff, setequal, union</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(qualtRics)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(googlesheets4)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>here() starts at /n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(qualtRics)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(googledrive)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(googlesheets4)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(testthat)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(logger)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>box<span class="sc">::</span><span class="fu">use</span>(</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  R<span class="sc">/</span>downloaders[download_from_qualtrics]</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">exists</span>(<span class="st">&quot;params$testing&quot;</span>)) {</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  testing <span class="ot">&lt;-</span> <span class="fu">interactive</span>()</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>log_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">&quot;pipelines/logs/maestro.log&quot;</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (testing) {</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log_threshold</span>(DEBUG)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log_appender</span>(<span class="fu">appender_tee</span>(log_file))</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log_info</span>(<span class="st">&quot;Running in testing mode: logs will be printed to console and saved to file.&quot;</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log_threshold</span>(INFO)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log_appender</span>(<span class="fu">appender_file</span>(log_file))</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">log_info</span>(<span class="st">&quot;Running in production mode: logs will be saved to file only.&quot;</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>We first need to access the Qualtrics API to retrieve any new data:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">&quot;Setting up Qualtrics API connection...&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] &quot;Setting up Qualtrics API connection...&quot;</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>connection_to_api <span class="ot">&lt;-</span> <span class="st">&quot;Connected&quot;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">log_info</span>(<span class="st">&quot;Setting up Qualtrics API connection...&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;Qualtrics API credentials are set&quot;</span>, {</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">Sys.getenv</span>(<span class="st">&quot;QUALTRICS_API_KEY&quot;</span>) <span class="sc">!=</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">Sys.getenv</span>(<span class="st">&quot;QUALTRICS_BASE_URL&quot;</span>) <span class="sc">!=</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_no_error</span>(<span class="fu">all_surveys</span>())</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>We can access the exact Qualtrics project that has all of our data upload records using its ID:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">&quot;Accessing Qualtrics project...&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] &quot;Accessing Qualtrics project...&quot;</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">log_info</span>(<span class="st">&quot;Accessing Qualtrics project...&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>qualtrics_project_id <span class="ot">&lt;-</span> <span class="fu">all_surveys</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">str_detect</span>(name, <span class="st">&quot;Data Intake Form&quot;</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(id)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">log_info</span>(<span class="st">&quot;Qualtrics project ID retrieved&quot;</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>survey_df <span class="ot">&lt;-</span> <span class="fu">fetch_survey</span>(qualtrics_project_id)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">log_info</span>(<span class="st">&quot;Survey data retrieved: dimensions - {nrow(survey_df)} rows, {ncol(survey_df)} columns&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>qualtrics_project_id <span class="ot">&lt;-</span> <span class="st">&quot;1234567890&quot;</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Project ID:&quot;</span>, qualtrics_project_id))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] &quot;Project ID: 1234567890&quot;</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>survey_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">respondent_id =</span> <span class="fu">c</span>(<span class="st">&quot;R1&quot;</span>, <span class="st">&quot;R2&quot;</span>, <span class="st">&quot;R3&quot;</span>),</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">response =</span> <span class="fu">c</span>(<span class="st">&quot;Yes&quot;</span>, <span class="st">&quot;No&quot;</span>, <span class="st">&quot;Yes&quot;</span>),</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data_gt_50mb =</span> <span class="fu">c</span>(<span class="cn">FALSE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>),</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data_path_globus =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="st">&quot;globus://path/to/large/data/R3&quot;</span>)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">&quot;Survey data retrieved:&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] &quot;Survey data retrieved:&quot;</code></pre>
-</div>
-</div>
-<p>We should also get the corresponding google sheet that tracks whether or not the response has been processed:</p>
+<p>We should also get the corresponding google sheet that tracks whether or not the response has been processed. Fortunately, we have already set up a data engineering google service account for all things Google Drive access:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>gsheet <span class="ot">&lt;-</span> <span class="st">&quot;url to google sheet&quot;</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>sheet_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">respondent_id =</span> <span class="fu">c</span>(<span class="st">&quot;R1&quot;</span>, <span class="st">&quot;R2&quot;</span>, <span class="st">&quot;R3&quot;</span>),</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">processed =</span> <span class="fu">c</span>(<span class="cn">FALSE</span>, <span class="cn">FALSE</span>, <span class="cn">FALSE</span>)</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">log_info</span>(<span class="st">&quot;Setting up Google Sheets access...&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>sa <span class="ot">&lt;-</span> <span class="fu">Sys.getenv</span>(<span class="st">&quot;GOOGLEDRIVE_SERVICE_ACCOUNT_FILE&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>gsheet <span class="ot">&lt;-</span> <span class="fu">Sys.getenv</span>(<span class="st">&quot;GOOGLESHEETS_SHEET_URL&quot;</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;Google API credentials are set&quot;</span>, {</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">nzchar</span>(sa))</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">file.exists</span>(sa))</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_no_error</span>(<span class="fu">drive_auth</span>(<span class="at">path =</span> sa))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_no_error</span>(<span class="fu">gs4_auth</span>(<span class="at">path =</span> sa))</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>sheet_df <span class="ot">&lt;-</span> <span class="fu">read_sheet</span>(gsheet)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;Google Sheet data retrieved correctly&quot;</span>, {</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">nrow</span>(sheet_df) <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">all</span>(<span class="fu">c</span>(<span class="st">&quot;response_id&quot;</span>, <span class="st">&quot;processed&quot;</span>) <span class="sc">%in%</span> <span class="fu">colnames</span>(sheet_df)))</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="processing" class="level2">
 <h2 class="anchored" data-anchor-id="processing">Processing</h2>
-<p>We process a response by checking whether the data is expected to be larger than 50mb; if not, we can directly download it to the gold_mine qualtrics folder from the qualtrics response object ID:</p>
+<p>We process a response by checking whether the data is expected to be larger than 50mb; if not, we can directly download it to the gold_mine qualtrics folder from the qualtrics response object ID. So first, we must separate those two cases by joining the google sheet with the qualtrics survey data on the response ID, and then filtering for unprocessed responses:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>sheet_df <span class="sc">|&gt;</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span>processed) <span class="sc">|&gt;</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(survey_df, <span class="at">by =</span> <span class="st">&quot;respondent_id&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">download_path =</span> <span class="fu">ifelse</span>(data_gt_50mb <span class="sc">==</span> <span class="cn">FALSE</span>, <span class="fu">paste0</span>(<span class="st">&quot;gold_mine/qualtrics/&quot;</span>, respondent_id, <span class="st">&quot;.csv&quot;</span>), data_path_globus)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>() <span class="ot">-&gt;</span> unprocessed_responses</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">&quot;Unprocessed responses with download paths:&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] &quot;Unprocessed responses with download paths:&quot;</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>sheet_df <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">gsheets_index =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>(), </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">processed =</span> <span class="fu">replace_na</span>(processed, <span class="cn">FALSE</span>),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">data_gt_50_mb =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      data_gt_50_mb <span class="sc">==</span> <span class="st">&quot;Yes&quot;</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      data_gt_50_mb <span class="sc">==</span> <span class="st">&quot;No&quot;</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">|&gt;</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span>processed) <span class="sc">%&gt;%</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(., survey_df, <span class="at">by =</span> <span class="fu">join_by</span>(<span class="st">&quot;response_id&quot;</span> <span class="sc">==</span> <span class="st">&quot;ResponseId&quot;</span>)) <span class="ot">-&gt;</span> unprocessed_responses</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="fu">log_info</span>(<span class="st">&quot;Unprocessed responses identified: {nrow(unprocessed_responses)}&quot;</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>unprocessed_responses <span class="sc">|&gt;</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span>data_gt_50_mb) <span class="ot">-&gt;</span> direct_download_candidates</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>unprocessed_responses <span class="sc">|&gt;</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(data_gt_50_mb) <span class="ot">-&gt;</span> globus_download_candidates</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="fu">log_info</span>(<span class="st">&quot;Download Candidates: {nrow(direct_download_candidates)} direct, {nrow(globus_download_candidates)} globus&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(unprocessed_responses)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 6
-  respondent_id processed response data_gt_50mb data_path_globus   download_path
-  &lt;chr&gt;         &lt;lgl&gt;     &lt;chr&gt;    &lt;lgl&gt;        &lt;chr&gt;              &lt;chr&gt;        
-1 R1            FALSE     Yes      FALSE        &lt;NA&gt;               gold_mine/qu…
-2 R2            FALSE     No       FALSE        &lt;NA&gt;               gold_mine/qu…
-3 R3            FALSE     Yes      TRUE         globus://path/to/… globus://pat…</code></pre>
-</div>
-</div>
-<p>For responses with data larger than 50mb, we can use the globus path to download the data to the gold_mine qualtrics folder, and for responses with data smaller than 50mb, we can directly download it from the qualtrics response object ID to the gold_mine qualtrics folder. We can use a global function called <code>download_data</code> that takes in the download path and the respondent ID to handle both cases:</p>
+<p>For responses with data larger than 50mb, we can use the globus path to download the data to the gold_mine qualtrics folder, and for responses with data smaller than 50mb, we can directly download it from the qualtrics response object ID to the gold_mine qualtrics folder. Here is the case that we have data smaller than 50mb:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>download_data <span class="ot">&lt;-</span> <span class="cf">function</span>(download_path, respondent_id) {</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">grepl</span>(<span class="st">&quot;globus://&quot;</span>, download_path)) {</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Downloading large data for respondent&quot;</span>, respondent_id, <span class="st">&quot;from globus path:&quot;</span>, download_path))</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Code to download from globus would go here</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Downloading small data for respondent&quot;</span>, respondent_id, <span class="st">&quot;from Qualtrics response object ID:&quot;</span>, download_path))</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Code to download from Qualtrics would go here</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>unprocessed_responses <span class="sc">|&gt;</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">download_result =</span> <span class="fu">download_data</span>(download_path, respondent_id)</span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> processed_responses</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] &quot;Downloading small data for respondent R1 from Qualtrics response object ID: gold_mine/qualtrics/R1.csv&quot;
-[1] &quot;Downloading small data for respondent R2 from Qualtrics response object ID: gold_mine/qualtrics/R2.csv&quot;
-[1] &quot;Downloading large data for respondent R3 from globus path: globus://path/to/large/data/R3&quot;</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">nrow</span>(direct_download_candidates) <span class="sc">&gt;</span> <span class="dv">0</span>){</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log_info</span>(<span class="st">&quot;Processing direct downloads for {nrow(direct_download_candidates)} candidates...&quot;</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  direct_download_candidates <span class="sc">|&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(testing){</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># just taking a sample for testing</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">slice_sample</span>(., <span class="at">n =</span> <span class="fu">min</span>(<span class="dv">3</span>, <span class="fu">nrow</span>(.)))</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        .</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    } <span class="sc">|&gt;</span> </span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">download_result =</span> <span class="fu">download_from_qualtrics</span>(</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">file_id =</span> Q25_Id,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">filename =</span> Q25_Name,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">qualtrics_project_id =</span> qualtrics_project_id,</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">response_id =</span> response_id,</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">response_date =</span> StartDate,</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">responder_id =</span> <span class="fu">case_when</span>(</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>          <span class="sc">!</span><span class="fu">is.na</span>(Q12) <span class="sc">~</span> Q12,</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>          <span class="sc">!</span><span class="fu">is.na</span>(Q14) <span class="sc">~</span> Q14,</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>          <span class="sc">!</span><span class="fu">is.na</span>(Q15) <span class="sc">~</span> Q15,</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>          <span class="sc">!</span><span class="fu">is.na</span>(Q17) <span class="sc">~</span> Q17,</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>          <span class="sc">!</span><span class="fu">is.na</span>(uploader_name) <span class="sc">~</span> uploader_name,</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;Unknown&quot;</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    ) <span class="ot">-&gt;</span> direct_download_results</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log_info</span>(<span class="st">&quot;Direct download attempts completed for {nrow(direct_download_results)} candidates&quot;</span>)</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">test_that</span>(<span class="st">&quot;Qualtrics direct download process completed successfully&quot;</span>, {</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect_true</span>(<span class="fu">all</span>(<span class="sc">!</span><span class="fu">is.na</span>(direct_download_results<span class="sc">$</span>download_result)))</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect_true</span>(<span class="fu">all</span>(<span class="fu">file.exists</span>(direct_download_results<span class="sc">$</span>download_result)))</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log_info</span>(<span class="st">&quot;No direct download candidates to process.&quot;</span>)</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>  direct_download_results <span class="ot">&lt;-</span> direct_download_candidates <span class="sc">%&gt;%</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">download_result =</span> <span class="cn">NA_character_</span>)</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</div>
+</section>
+<section id="write-back-results" class="level2">
+<h2 class="anchored" data-anchor-id="write-back-results">Write Back Results</h2>
 <p>And after processing, we must update the google sheet to mark the response as processed:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>updated_sheet_df <span class="ot">&lt;-</span> sheet_df <span class="sc">|&gt;</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(processed_responses, <span class="at">by =</span> <span class="st">&quot;respondent_id&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">processed =</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(download_result), <span class="cn">TRUE</span>, <span class="cn">FALSE</span>))</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">&quot;Updated sheet with processed status:&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] &quot;Updated sheet with processed status:&quot;</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>updated_sheet_df <span class="ot">&lt;-</span> sheet_df <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    direct_download_results <span class="sc">|&gt;</span> <span class="fu">select</span>(response_id, download_result),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">join_by</span>(response_id)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">processed =</span> <span class="fu">case_when</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(download_result) <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> processed</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>download_result)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;Google Sheet updated correctly after processing&quot;</span>, {</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_shape</span>(updated_sheet_df, <span class="at">nrow =</span> <span class="fu">nrow</span>(sheet_df), <span class="at">ncol =</span> <span class="fu">ncol</span>(sheet_df))</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="fu">log_info</span>(<span class="st">&quot;Google Sheet updated with processed status for direct downloads. Attempting to write back to Google Sheets...&quot;</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="fu">range_write</span>(gsheet, updated_sheet_df, <span class="at">range =</span> <span class="st">&quot;A1&quot;</span>, <span class="at">col_names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="fu">log_info</span>(<span class="st">&quot;Google Sheet updated successfully with processed status for direct downloads.&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(updated_sheet_df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  respondent_id processed.x processed.y response data_gt_50mb
-1            R1       FALSE       FALSE      Yes        FALSE
-2            R2       FALSE       FALSE       No        FALSE
-3            R3       FALSE       FALSE      Yes         TRUE
-                data_path_globus                  download_path
-1                           &lt;NA&gt;     gold_mine/qualtrics/R1.csv
-2                           &lt;NA&gt;     gold_mine/qualtrics/R2.csv
-3 globus://path/to/large/data/R3 globus://path/to/large/data/R3
-                                                                                         download_result
-1 Downloading small data for respondent R1 from Qualtrics response object ID: gold_mine/qualtrics/R1.csv
-2 Downloading small data for respondent R2 from Qualtrics response object ID: gold_mine/qualtrics/R2.csv
-3              Downloading large data for respondent R3 from globus path: globus://path/to/large/data/R3
-  processed
-1      TRUE
-2      TRUE
-3      TRUE</code></pre>
-</div>
-</div>
-<p>This pipeline will be run on a regular schedule, so technically this counts as a dynamic daily ETL pipeline, so it should be run with <code>maestro</code> and SCRONTAB. See this notebook for more details on how this was set up: <a href="../notebooks/10_pipelines.html">SCRONTAB Jobs with Maestro</a>.</p>
+<p>And with that, we’re done!</p>
 
 
 </section>
