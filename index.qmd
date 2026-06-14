@@ -35,7 +35,7 @@ With some SCRONTAB config we'll need:
 ```{r}
 library(glue)
 mail_user <- Sys.getenv("SLACK_EMAIL")
-git_cmd <- glue("git commit -a -m 'cron job commit @ $(date)' && git push")
+git_cmd <- glue('git commit -a -m "Maestro run" && git push')
 glue(
 '#SCRON -J Maestro-prospectorQualtrics', 
 '#SCRON -p hsph', 

@@ -206,7 +206,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>mail_user <span class="ot">&lt;-</span> <span class="fu">Sys.getenv</span>(<span class="st">"SLACK_EMAIL"</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>git_cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">"git commit -a -m 'cron job commit @ $(date)' &amp;&amp; git push"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>git_cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'git commit -a -m "Maestro run" &amp;&amp; git push'</span>)</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">glue</span>(</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="st">'#SCRON -J Maestro-prospectorQualtrics'</span>, </span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="st">'#SCRON -p hsph'</span>, </span>
@@ -227,7 +227,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 #SCRON -e /n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/pipelines/logs/cron.err
 #SCRON --mail-type=FAIL,END
 #SCRON --mail-user=
-0 9 * * * cd '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics' &amp;&amp; /n/home03/ttapera/software/spack/opt/spack/linux-icelake/r-4.5.1-munmhwpvanxog4vieqta3cvvdaarsali/rlib/R/bin/Rscript '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/run.R'  &gt;&gt; '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/pipelines/logs/orchestrator.log' 2&gt;&amp;1 &amp;&amp; git commit -a -m 'cron job commit @ $(date)' &amp;&amp; git push</code></pre>
+0 9 * * * cd '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics' &amp;&amp; /n/home03/ttapera/software/spack/opt/spack/linux-icelake/r-4.5.1-munmhwpvanxog4vieqta3cvvdaarsali/rlib/R/bin/Rscript '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/run.R'  &gt;&gt; '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/pipelines/logs/orchestrator.log' 2&gt;&amp;1 &amp;&amp; git commit -a -m "Maestro run" &amp;&amp; git push</code></pre>
 </div>
 </div>
 </section>
@@ -255,21 +255,21 @@ frequently as specified.
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-── [2026-06-14 20:30:52]
+── [2026-06-14 20:45:47]
 Running pipelines ▶ 
 ℹ process_data_pipeline</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Running the maestro pipeline..."
-Test passed with 3 successes 😀.
+Test passed with 3 successes 🎊.
 
   |                                                                            
   |                                                                      |   0%
   |                                                                            
   |======================================================================| 100%
-Test passed with 4 successes 🎉.
+Test passed with 4 successes 🎊.
+Test passed with 2 successes 🥇.
 Test passed with 2 successes 😀.
-Test passed with 2 successes 🥳.
 ── Error: Google Sheet updated correctly after processing ──────────────────────
 Error in `expect_shape(updated_sheet_df, nrow = nrow(sheet_df), ncol = ncol(sheet_df))`: Exactly one of `nrow`, `ncol`, or `dim` must be supplied.
 ✖ `nrow` and `ncol` were supplied together.
@@ -280,11 +280,11 @@ Backtrace:
  3.     └─rlang::abort(msg, call = .call)</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✖ process_data_pipeline [1m 5.3s]
+<pre><code>✖ process_data_pipeline [34.6s]
 
 
-── [2026-06-14 20:30:52]
-Pipeline execution completed ■ | 65.312 sec elapsed 
+── [2026-06-14 20:45:47]
+Pipeline execution completed ■ | 34.581 sec elapsed 
 ✔ 0 successes | ! 0 warnings | ✖ 1 error | ◼ 1 total
 ✖ Use `last_run_errors()` to show pipeline errors.
 ────────────────────────────────────────────────────────────────────────────────
@@ -300,7 +300,7 @@ Pipe name | Next scheduled run
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glue</span>(<span class="st">"Last rendered: {Sys.time()}"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Last rendered: 2026-06-14 16:31:58.516979</code></pre>
+<pre><code>Last rendered: 2026-06-14 16:46:22.360328</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
