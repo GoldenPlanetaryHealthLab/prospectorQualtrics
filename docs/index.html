@@ -257,21 +257,21 @@ frequently as specified.
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-── [2026-06-14 21:15:48]
+── [2026-06-14 21:30:48]
 Running pipelines ▶ 
 ℹ process_data_pipeline</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Running the maestro pipeline..."
-Test passed with 3 successes 🌈.
+Test passed with 3 successes 🥳.
 
   |                                                                            
   |                                                                      |   0%
   |                                                                            
   |======================================================================| 100%
-Test passed with 4 successes 🥳.
-Test passed with 2 successes 🎊.
-Test passed with 2 successes 🥳.
+Test passed with 4 successes 😸.
+Test passed with 2 successes 😀.
+Test passed with 2 successes 🎉.
 ── Error: Google Sheet updated correctly after processing ──────────────────────
 Error in `expect_shape(updated_sheet_df, nrow = nrow(sheet_df), ncol = ncol(sheet_df))`: Exactly one of `nrow`, `ncol`, or `dim` must be supplied.
 ✖ `nrow` and `ncol` were supplied together.
@@ -282,11 +282,11 @@ Backtrace:
  3.     └─rlang::abort(msg, call = .call)</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✖ process_data_pipeline [30.1s]
+<pre><code>✖ process_data_pipeline [27.2s]
 
 
-── [2026-06-14 21:15:48]
-Pipeline execution completed ■ | 30.128 sec elapsed 
+── [2026-06-14 21:30:48]
+Pipeline execution completed ■ | 27.214 sec elapsed 
 ✔ 0 successes | ! 0 warnings | ✖ 1 error | ◼ 1 total
 ✖ Use `last_run_errors()` to show pipeline errors.
 ────────────────────────────────────────────────────────────────────────────────
@@ -302,7 +302,7 @@ Pipe name | Next scheduled run
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glue</span>(<span class="st">"Last rendered: {Sys.time()}"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Last rendered: 2026-06-14 17:16:18.531216</code></pre>
+<pre><code>Last rendered: 2026-06-14 17:31:16.015693</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
