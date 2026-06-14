@@ -96,7 +96,7 @@ log_info("Download Candidates: {nrow(direct_download_candidates)} direct, {nrow(
 if(nrow(direct_download_candidates) > 0){
   log_info("Processing direct downloads for {nrow(direct_download_candidates)} candidates...")
 
-  direct_download_candidates |>
+  direct_download_candidates %>%
     {
       if(testing){
         # just taking a sample for testing
@@ -104,7 +104,7 @@ if(nrow(direct_download_candidates) > 0){
       } else {
         .
       }
-    } |> 
+    } %>%
     rowwise() |>
     mutate(
       download_result = download_from_qualtrics(

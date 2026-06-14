@@ -35,13 +35,14 @@ With some SCRONTAB config we'll need:
 ```{r}
 library(glue)
 mail_user <- Sys.getenv("SLACK_EMAIL")
-runtime <- Sys.time()
-git_cmd <- glue("git commit -a -m 'cron job commit @ {runtime}' && git push")
+git_cmd <- glue("git commit -a -m 'cron job commit @ $(date)' && git push")
 glue(
 '#SCRON -J Maestro-prospectorQualtrics', 
 '#SCRON -p hsph', 
 '#SCRON --mem=1G', 
 '#SCRON -t 00:10:00', 
+'#SCRON -o {here("pipelines/logs/cron.out")}', 
+'#SCRON -e {here("pipelines/logs/cron.err")}', 
 '#SCRON --mail-type=FAIL,END', 
 '#SCRON --mail-user={mail_user}', 
 '{cron_cmd$min} {cron_cmd$hour} {cron_cmd$day_of_month} {cron_cmd$month} {cron_cmd$day_of_week} {cron_cmd$command} && {git_cmd}',
