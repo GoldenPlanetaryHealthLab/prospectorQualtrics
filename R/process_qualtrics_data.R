@@ -62,7 +62,7 @@ test_that("Google API credentials are set", {
 
 })
 
-sheet_df <- read_sheet(gsheet)
+sheet_df <- read_sheet(gsheet, col_types = "cTcccc")
 
 test_that("Google Sheet data retrieved correctly", {
   expect_true(nrow(sheet_df) > 0)
@@ -73,12 +73,18 @@ test_that("Google Sheet data retrieved correctly", {
 sheet_df |>
   mutate(
     gsheets_index = 1:n(), 
-    processed = replace_na(processed, FALSE),
     data_gt_50_mb = case_when(
       data_gt_50_mb == "Yes" ~ TRUE,
       data_gt_50_mb == "No" ~ FALSE,
       TRUE ~ NA
     )) |>
+  mutate(
+    processed = if_else(
+      processed %in% c("TRUE", "FALSE", "", NA),
+      processed,
+      NA_character_
+    )
+  ) |>
   dplyr::filter(!processed) %>%
   full_join(., survey_df, by = join_by("response_id" == "ResponseId")) -> unprocessed_responses
 
