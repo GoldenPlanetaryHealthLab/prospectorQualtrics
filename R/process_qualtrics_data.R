@@ -83,7 +83,7 @@ sheet_df |>
       processed %in% c("TRUE", "FALSE", "", NA),
       processed,
       NA_character_
-    ) %>% as.logical()
+    ) %>% as.logical() %>% replace_na(FALSE)
   ) |>
   dplyr::filter(!processed) %>%
   full_join(., survey_df, by = join_by("response_id" == "ResponseId")) -> unprocessed_responses

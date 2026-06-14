@@ -4191,7 +4191,7 @@ vertical-align: -.125em;
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      processed <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;TRUE&quot;</span>, <span class="st">&quot;FALSE&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="cn">NA</span>),</span>
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      processed,</span>
 <span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>      <span class="cn">NA_character_</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> <span class="fu">as.logical</span>()</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> <span class="fu">as.logical</span>() <span class="sc">%&gt;%</span> <span class="fu">replace_na</span>(<span class="cn">FALSE</span>)</span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span>processed) <span class="sc">%&gt;%</span></span>
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(., survey_df, <span class="at">by =</span> <span class="fu">join_by</span>(<span class="st">&quot;response_id&quot;</span> <span class="sc">==</span> <span class="st">&quot;ResponseId&quot;</span>)) <span class="ot">-&gt;</span> unprocessed_responses</span>
