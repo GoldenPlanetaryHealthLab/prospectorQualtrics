@@ -20,8 +20,8 @@ log_file <- here("pipelines/logs/maestro.log")
 
 if (testing) {
   log_threshold(DEBUG)
-  log_appender(appender_tee(log_file))
-  log_info("Running in testing mode: logs will be printed to console and saved to file.")
+  #log_appender(appender_tee(log_file))
+  log_info("Running in testing mode: logs will be printed to console.")
 } else {
   log_threshold(INFO)
   log_appender(appender_file(log_file))
@@ -83,7 +83,7 @@ sheet_df |>
       processed %in% c("TRUE", "FALSE", "", NA),
       processed,
       NA_character_
-    )
+    ) %>% as.logical()
   ) |>
   dplyr::filter(!processed) %>%
   full_join(., survey_df, by = join_by("response_id" == "ResponseId")) -> unprocessed_responses
@@ -142,6 +142,7 @@ if(nrow(direct_download_candidates) > 0){
 
 
 updated_sheet_df <- sheet_df |>
+  mutate(processed = as.logical(processed)) |>
   left_join(
     direct_download_results |> select(response_id, download_result),
     by = join_by(response_id)
@@ -154,7 +155,6 @@ updated_sheet_df <- sheet_df |>
   ) %>%
   select(-download_result)
 
-message()
 test_that("Google Sheet updated correctly after processing", {
   expect_true(nrow(updated_sheet_df) == nrow(sheet_df))
 })
