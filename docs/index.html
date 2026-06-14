@@ -224,7 +224,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 #SCRON -t 00:10:00
 #SCRON --mail-type=FAIL,END
 #SCRON --mail-user=
-0 9 * * * cd '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics' &amp;&amp; /n/home03/ttapera/software/spack/opt/spack/linux-icelake/r-4.5.1-munmhwpvanxog4vieqta3cvvdaarsali/rlib/R/bin/Rscript '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/run.R'  &gt;&gt; '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/pipelines/logs/orchestrator.log' 2&gt;&amp;1 &amp;&amp; git commit -a -m 'cron job commit @ 2026-06-14 03:00:51.655797' &amp;&amp; git push</code></pre>
+0 9 * * * cd '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics' &amp;&amp; /n/home03/ttapera/software/spack/opt/spack/linux-icelake/r-4.5.1-munmhwpvanxog4vieqta3cvvdaarsali/rlib/R/bin/Rscript '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/run.R'  &gt;&gt; '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/pipelines/logs/orchestrator.log' 2&gt;&amp;1 &amp;&amp; git commit -a -m 'cron job commit @ 2026-06-14 03:10:46.642073' &amp;&amp; git push</code></pre>
 </div>
 </div>
 </section>
@@ -245,21 +245,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-── [2026-06-14 07:00:55]
+── [2026-06-14 07:10:50]
 Running pipelines ▶ 
-ℹ process_data_pipeline</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Running the maestro pipeline..."</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>✖ process_data_pipeline [83ms]
 
-
-── [2026-06-14 07:00:55]
-Pipeline execution completed ■ | 0.109 sec elapsed 
-✔ 0 successes | ! 0 warnings | ✖ 1 error | ◼ 1 total
-✖ Use `last_run_errors()` to show pipeline errors.
+── [2026-06-14 07:10:50]
+Pipeline execution completed ■ | 0.009 sec elapsed 
+✔ 0 successes | ! 0 warnings | ✖ 0 errors | ◼ 0 total
 ────────────────────────────────────────────────────────────────────────────────
 
 ── Next scheduled pipelines ❯ 
@@ -271,11 +262,11 @@ Pipe name | Next scheduled run
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glue</span>(<span class="st">"Last rendered: {Sys.time()}"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glue</span>(<span class="st">"Last rendered: {Sys.time()}"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Last rendered: 2026-06-14 03:00:56.175107</code></pre>
+<pre><code>Last rendered: 2026-06-14 03:10:50.751351</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>R version 4.5.1 (2025-06-13)
 Platform: x86_64-pc-linux-gnu
