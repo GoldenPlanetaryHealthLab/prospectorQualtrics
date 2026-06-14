@@ -104,13 +104,17 @@ download_from_qualtrics <- function(
     filename = filename,
     qualtrics_project_id = qualtrics_project_id,
     response_id = response_id,
+    response_date = response_date,
     responder_id = responder_id,
     base_url = base_url,
     api_token = api_token,
     output_dir = output_dir
   )
 
-  missing_args <- names(required_args)[vapply(required_args, identical, logical(1), "")]
+  is_missing <- function(x) {
+     is.null(x) || (length(x) == 1 && (is.na(x) || identical(x, "") || (is.character(x) && !nzchar(x))))
+   }
+  missing_args <- names(required_args)[vapply(required_args, is_missing, logical(1))]
 
   if (length(missing_args) > 0) {
     stop(
@@ -135,6 +139,8 @@ download_from_qualtrics <- function(
   )
 
   fs::dir_create(output_dir_final)
+
+  filename <- fs::path_file(filename)
 
   output_path <- fs::path(output_dir_final, filename)
 

@@ -47,6 +47,7 @@ testing <- if (exists("params", inherits = FALSE) && !is.null(params$testing)) {
 }
 
 log_file <- here("pipelines/logs/maestro.log")
+dir.create(dirname(log_file), recursive = TRUE, showWarnings = FALSE)
 
 if (testing) {
   log_threshold(DEBUG)
@@ -138,8 +139,8 @@ sheet_df |>
       NA_character_
     ) %>% as.logical() %>% replace_na(FALSE)
   ) |>
-  dplyr::filter(!processed) %>%
-  full_join(., survey_df, by = join_by("response_id" == "ResponseId")) -> unprocessed_responses
+  dplyr::filter(!processed) |>
+  dplyr::left_join(survey_df, by = join_by(response_id == ResponseId)) -> unprocessed_responses
 
 log_info("Unprocessed responses identified: {nrow(unprocessed_responses)}")
 
