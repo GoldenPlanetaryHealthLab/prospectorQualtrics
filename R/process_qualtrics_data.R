@@ -9,14 +9,17 @@ library(here)
 library(testthat)
 library(logger)
 box::use(
-  R/downloaders[download_from_qualtrics]
+  R/downloaders[download_from_qualtrics, download_from_globus_netscratch]
 )
 
-if(!exists("params$testing")) {
-  testing <- interactive()
+testing <- if (exists("params", inherits = FALSE) && !is.null(params$testing)) {
+  isTRUE(params$testing)
+} else {
+  interactive()
 }
 
 log_file <- here("pipelines/logs/maestro.log")
+dir.create(dirname(log_file), recursive = TRUE, showWarnings = FALSE)
 
 if (testing) {
   log_threshold(DEBUG)
@@ -77,7 +80,9 @@ sheet_df |>
       data_gt_50_mb == "Yes" ~ TRUE,
       data_gt_50_mb == "No" ~ FALSE,
       TRUE ~ NA
-    )) |>
+      # for some reason, when not filling out Yes, it automates to NA
+      # so replace NA with true
+    ) %>% replace_na(TRUE)) |>
   mutate(
     processed = if_else(
       processed %in% c("TRUE", "FALSE", "", NA),
@@ -85,8 +90,8 @@ sheet_df |>
       NA_character_
     ) %>% as.logical() %>% replace_na(FALSE)
   ) |>
-  dplyr::filter(!processed) %>%
-  full_join(., survey_df, by = join_by("response_id" == "ResponseId")) -> unprocessed_responses
+  dplyr::filter(!processed) |>
+  dplyr::left_join(survey_df, by = join_by(response_id == ResponseId)) -> unprocessed_responses
 
 log_info("Unprocessed responses identified: {nrow(unprocessed_responses)}")
 
@@ -141,11 +146,64 @@ if(nrow(direct_download_candidates) > 0){
 }
 
 
+log_info("Processing globus downloads for {nrow(globus_download_candidates)} candidates...")
+if(nrow(globus_download_candidates) > 0) {
+  
+  globus_download_candidates %>%
+    {
+      if(testing){
+        # just taking a sample for testing
+        slice_sample(., n = min(3, nrow(.)))
+      } else {
+        .
+      }
+    } %>%
+    rowwise() |>
+    mutate(
+      download_result = download_from_globus_netscratch(
+        response_id = response_id,
+        response_date = StartDate,
+        responder_id = case_when(
+          !is.na(Q12) ~ Q12,
+          !is.na(Q14) ~ Q14,
+          !is.na(Q15) ~ Q15,
+          !is.na(Q17) ~ Q17,
+          !is.na(uploader_name) ~ uploader_name,
+          TRUE ~ "Unknown"
+        )
+      )
+    ) -> globus_download_results
+
+  log_info("Globus download attempts completed for {nrow(globus_download_results)} candidates")
+  test_that("Globus download process completed successfully", {
+    expect_true(all(!is.na(globus_download_results$download_result)))
+    expect_true(all(file.exists(globus_download_results$download_result)))
+  })
+} else {
+  log_info("No globus download candidates to process.")
+  globus_download_results <- globus_download_candidates %>%
+    mutate(download_result = NA_character_)
+}
+
+
 updated_sheet_df <- sheet_df |>
   mutate(processed = as.logical(processed)) |>
   left_join(
     direct_download_results |> select(response_id, download_result),
     by = join_by(response_id)
+  ) |>
+  left_join(
+    globus_download_results |> select(response_id, download_result),
+    by = join_by(response_id)
+  ) |>
+  tidyr::unite(col = "download_result", download_result.x, download_result.y, sep = ";", na.rm = TRUE) |>
+  mutate(
+    processed = case_when(
+      !is.na(processed) ~ processed,
+       # if there is a download result from either direct or globus, mark as processed
+       !is.na(download_result) & download_result != "" ~ TRUE,
+       TRUE ~ processed
+    )
   ) |>
   mutate(
     processed = case_when(
@@ -159,6 +217,6 @@ test_that("Google Sheet updated correctly after processing", {
   expect_true(nrow(updated_sheet_df) == nrow(sheet_df))
 })
 
-log_info("Google Sheet updated with processed status for direct downloads. Attempting to write back to Google Sheets...")
+log_info("Local dataframe of Google Sheet updated with processed status for direct downloads. Attempting to write back to Google Sheets...")
 range_write(gsheet, updated_sheet_df, range = "A1", col_names = TRUE)
 log_info("Google Sheet updated successfully with processed status for direct downloads.")
