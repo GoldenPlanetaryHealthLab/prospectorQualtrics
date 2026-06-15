@@ -206,7 +206,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>mail_user <span class="ot">&lt;-</span> <span class="fu">Sys.getenv</span>(<span class="st">"SLACK_EMAIL"</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>git_cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'git commit -a -m "Maestro run" &amp;&amp; git push'</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>git_cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'git diff --quiet || (git commit -a -m "Maestro run" &amp;&amp; git push)'</span>)</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">glue</span>(</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="st">'#SCRON -J Maestro-prospectorQualtrics'</span>, </span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="st">'#SCRON -p hsph'</span>, </span>
@@ -228,8 +228,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 #SCRON -e /n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/pipelines/logs/cron.err
 #SCRON --open-mode=append
 #SCRON --mail-type=FAIL,END
-#SCRON --mail-user=
-0 9 * * * cd '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics' &amp;&amp; /n/home03/ttapera/software/spack/opt/spack/linux-icelake/r-4.5.1-munmhwpvanxog4vieqta3cvvdaarsali/rlib/R/bin/Rscript '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/run.R'  &gt;&gt; '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/pipelines/logs/orchestrator.log' 2&gt;&amp;1 &amp;&amp; git commit -a -m "Maestro run" &amp;&amp; git push</code></pre>
+#SCRON --mail-user=aaaapr3lk7gfdswioulcmvi3te@harvard.org.slack.com
+0 9 * * * cd '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics' &amp;&amp; /n/home03/ttapera/software/spack/opt/spack/linux-icelake/r-4.5.1-munmhwpvanxog4vieqta3cvvdaarsali/rlib/R/bin/Rscript '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/run.R'  &gt;&gt; '/n/holylabs/cgolden_lab/Lab/frontier/works/prospectors/prospectorQualtrics/pipelines/logs/orchestrator.log' 2&gt;&amp;1 &amp;&amp; git diff --quiet || (git commit -a -m "Maestro run" &amp;&amp; git push)</code></pre>
 </div>
 </div>
 </section>
@@ -249,54 +249,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">log_to_file =</span> <span class="fu">here</span>(<span class="st">"pipelines/logs/maestro.log"</span>)</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Pipeline process_data_pipeline has a frequency higher (i.e., more often) than
-the frequency of the orchestrator. This means the pipeline will not run as
-frequently as specified.
-ℹ Consider increasing the frequency of the orchestrator or decreasing the
-  pipeline frequency.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
 <pre><code>
-── [2026-06-14 23:00:47]
+── [2026-06-15 04:09:50]
 Running pipelines ▶ 
 ℹ process_data_pipeline</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Running the maestro pipeline..."
-Test passed with 3 successes 🥇.
+Test passed with 3 successes 🎊.
 
   |                                                                            
   |                                                                      |   0%
   |                                                                            
   |======================================================================| 100%
 Test passed with 4 successes 🥇.
-Test passed with 2 successes 😸.
-Test passed with 2 successes 🎉.
-Test passed with 1 success 😀.</code></pre>
+Test passed with 2 successes 🥳.
+Test passed with 2 successes 🎊.
+Test passed with 2 successes 😀.
+Test passed with 1 success 😸.</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✔ process_data_pipeline [14.8s]
+<pre><code>✔ process_data_pipeline [18.8s]
 
 
-── [2026-06-14 23:00:47]
-Pipeline execution completed ■ | 14.82 sec elapsed 
+── [2026-06-15 04:09:50]
+Pipeline execution completed ■ | 18.804 sec elapsed 
 ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total
 ────────────────────────────────────────────────────────────────────────────────
 
 ── Next scheduled pipelines ❯ 
 Pipe name | Next scheduled run
-• process_data_pipeline | 2026-06-15
+• process_data_pipeline | 2026-06-16
 
 ── Maestro Schedule with 1 pipeline:  
 • Success</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glue</span>(<span class="st">"Last rendered: {Sys.time()}"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glue</span>(<span class="st">"Last rendered: {Sys.time()}"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Last rendered: 2026-06-14 19:01:02.881837</code></pre>
+<pre><code>Last rendered: 2026-06-15 00:10:09.711386</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>R version 4.5.1 (2025-06-13)
 Platform: x86_64-pc-linux-gnu

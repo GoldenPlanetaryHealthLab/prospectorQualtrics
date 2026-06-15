@@ -6,7 +6,7 @@ library(here)
 
 #' Ferry Qualtrics Responses To The Gold Mine
 #'
-#' @maestroFrequency 1 hour
+#' @maestroFrequency 1 day
 #' @maestroStartTime 2026-06-12
 #' @maestroTz US/Eastern
 #' @maestroLogLevel INFO

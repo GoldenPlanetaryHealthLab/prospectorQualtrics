@@ -5,6 +5,9 @@ box::use(fs)
 box::use(here)
 box::use(janitor)
 box::use(glue)
+box::use(purrr)
+box::use(testthat)
+
 
 #' Download an uploaded file from a Qualtrics survey response
 #'
@@ -46,6 +49,7 @@ box::use(glue)
 #'   responder_id = "Example Responder"
 #' )
 #' }
+#' @family Downloaders
 #' @export
 download_from_qualtrics <- function(
   file_id,
@@ -63,13 +67,17 @@ download_from_qualtrics <- function(
     filename = filename,
     qualtrics_project_id = qualtrics_project_id,
     response_id = response_id,
+    response_date = response_date,
     responder_id = responder_id,
     base_url = base_url,
     api_token = api_token,
     output_dir = output_dir
   )
 
-  missing_args <- names(required_args)[vapply(required_args, identical, logical(1), "")]
+  is_missing <- function(x) {
+     is.null(x) || (length(x) == 1 && (is.na(x) || identical(x, "") || (is.character(x) && !nzchar(x))))
+   }
+  missing_args <- names(required_args)[vapply(required_args, is_missing, logical(1))]
 
   if (length(missing_args) > 0) {
     stop(
@@ -94,6 +102,8 @@ download_from_qualtrics <- function(
   )
 
   fs::dir_create(output_dir_final)
+
+  filename <- fs::path_file(filename)
 
   output_path <- fs::path(output_dir_final, filename)
 
@@ -128,5 +138,132 @@ download_from_qualtrics <- function(
     call. = FALSE
   )
 
+  NA_character_
+}
+
+
+#' Stage a dataset uploaded through the lab Globus intake collection
+#'
+#' Locates a dataset uploaded to the lab's Globus intake collection and copies
+#' it into the prospector staging area. Uploads are expected to reside in a
+#' directory named after the associated Qualtrics response ID. The function
+#' verifies that the intake directory exists and contains files before copying
+#' the contents to a response-specific staging directory.
+#'
+#' Unlike datasets uploaded directly through Qualtrics, Globus-uploaded data
+#' already resides on Harvard's HPC storage infrastructure. As a result, this
+#' function performs a filesystem copy operation rather than a network
+#' download.
+#'
+#' @param response_id Character. Qualtrics response ID used to identify the
+#'   corresponding Globus intake directory.
+#' @param response_date Date, POSIXct, or character coercible to a date. Used
+#'   to partition staged datasets by submission date.
+#' @param responder_id Character. Identifier for the uploader. Used to create
+#'   a responder-specific staging directory.
+#' @param base_url Character. Path to the root Globus intake directory on the
+#'   filesystem. Defaults to the lab's Globus-backed intake location.
+#' @param output_dir Character. Base directory where staged datasets should be
+#'   copied.
+#'
+#' @return Character path to the staged dataset directory. Returns
+#'   `NA_character_` if one or more files fail to copy successfully.
+#'
+#' @details
+#' The function assumes that:
+#'
+#' \itemize{
+#'   \item Large datasets have been uploaded through the lab's Globus intake
+#'     collection.
+#'   \item Each upload resides in a directory named after the corresponding
+#'     Qualtrics response ID.
+#'   \item The intake collection is backed by a filesystem path accessible from
+#'     the execution environment.
+#' }
+#'
+#' @seealso [download_from_qualtrics()]
+#'
+#' @examples
+#' \dontrun{
+#' download_from_globus_netscratch(
+#'   response_id = "R_123456789",
+#'   response_date = "2026-05-03",
+#'   responder_id = "Jane Doe"
+#' )
+#' }
+#' @family Downloaders
+#'
+#' @export
+download_from_globus_netscratch <- function(
+  response_id,
+  response_date,
+  responder_id,
+  base_url = "/n/netscratch/cgolden_lab/Lab/qualtrics_data_intake_folder",
+  output_dir = here::here("data/staging/globus")
+) {
+  required_args <- list(
+    response_id = response_id,
+    response_date = response_date,
+    responder_id = responder_id,
+    base_url = base_url,
+    output_dir = output_dir
+  )
+
+  is_missing <- function(x) {
+     is.null(x) || (length(x) == 1 && (is.na(x) || identical(x, "") || (is.character(x) && !nzchar(x))))
+   }
+  missing_args <- names(required_args)[vapply(required_args, is_missing, logical(1))]
+
+  if (length(missing_args) > 0) {
+    stop(
+      "Missing required argument(s): ",
+      paste(missing_args, collapse = ", "),
+      call. = FALSE
+    )
+  }
+
+  download_url <- fs::fs_path(
+    glue::glue(
+      "{base_url}/{response_id}"
+    )
+  )
+
+  message("Testing if Globus netscratch URL exists")
+
+  fs::dir_exists(download_url) || stop(
+    glue::glue("Globus netscratch URL does not exist: {download_url}"),
+    call. = FALSE
+  )
+
+  response_date <- lubridate::as_date(response_date)
+
+  output_dir_final <- fs::path(
+    output_dir,
+    response_date,
+    janitor::make_clean_names(responder_id),
+    response_id
+  )
+
+  fs::dir_create(output_dir_final)
+
+  filenames <- fs::dir_ls(download_url, type = "file") # this may appear as a singular character vector, but since it is a named char, you can use it as a list in subsequent map functions (ie it wont map over each character in the string, but rather treat the whole string as one element to map over)
+
+  message("Testing if Globus netscratch URL contains files")
+  length(filenames) > 0 || stop(
+    glue::glue("Globus netscratch URL does not contain any files: {download_url}"),
+    call. = FALSE
+  )
+
+  fs::dir_copy(download_url, output_dir_final, overwrite = TRUE)
+
+  successfully_copied <- purrr::map_lgl(filenames, ~ fs::file_exists(fs::path(output_dir_final, fs::path_file(.x)))) |> 
+    unlist()
+
+   if(all(successfully_copied)) {
+     message(glue::glue("All files copied successfully from {download_url} to {output_dir_final}"))
+     return(as.character(output_dir_final))
+   } else {
+     warning(glue::glue("Some files failed to copy from {download_url} to {output_dir_final}"))
+   }
   NA_character_
 }
