@@ -219,4 +219,4 @@ test_that("Google Sheet updated correctly after processing", {
 
 log_info("Local dataframe of Google Sheet updated with processed status for direct downloads. Attempting to write back to Google Sheets...")
 range_write(gsheet, updated_sheet_df, range = "A1", col_names = TRUE)
-log_info("Google Sheet updated successfully with processed status for direct downloads.")
+log_info("Google Sheet updated successfully with processed status for all downloads.")
