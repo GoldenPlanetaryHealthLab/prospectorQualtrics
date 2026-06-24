@@ -35,4 +35,5 @@ dependencies = [
     "janitor",
     "devtools",
     "box",
+    "assertr",
 ]

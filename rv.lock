@@ -4,6 +4,13 @@ version = 2
 r_version = "4.5"
 
 [[packages]]
+name = "MASS"
+version = "7.3-65"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = []
+
+[[packages]]
 name = "R.cache"
 version = "0.17.0"
 source = { repository = "https://cran.r-project.org/" }
@@ -74,6 +81,17 @@ source = { repository = "https://cran.r-project.org/" }
 force_source = false
 dependencies = [
     { name = "sys", requirement = "(>= 2.1)" },
+]
+
+[[packages]]
+name = "assertr"
+version = "3.0.1"
+source = { repository = "https://cran.r-project.org/" }
+force_source = false
+dependencies = [
+    { name = "dplyr", requirement = "(>= 0.7.0)" },
+    "MASS",
+    { name = "rlang", requirement = "(>= 0.3.0)" },
 ]
 
 [[packages]]

@@ -85,15 +85,16 @@ sheet_df |>
     ) %>% replace_na(TRUE)) |>
   mutate(
     processed = if_else(
-      processed %in% c("TRUE", "FALSE", "", NA),
+      processed %in% c("TRUE", "FALSE"),
       processed,
       NA_character_
-    ) %>% as.logical() %>% replace_na(FALSE)
+    ) %>% as.logical()
   ) |>
   dplyr::filter(!processed) |>
   dplyr::left_join(survey_df, by = join_by(response_id == ResponseId)) -> unprocessed_responses
 
 log_info("Unprocessed responses identified: {nrow(unprocessed_responses)}")
+
 
 unprocessed_responses |>
   dplyr::filter(!data_gt_50_mb) -> direct_download_candidates
