@@ -13,7 +13,7 @@ box::use(
 )
 
 testing <- if (exists("params", inherits = FALSE) && !is.null(params$testing)) {
-  isTRUE(params$testing)
+  params$testing
 } else {
   interactive()
 }

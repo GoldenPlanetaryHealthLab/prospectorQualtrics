@@ -246,7 +246,7 @@ download_from_globus_netscratch <- function(
 
   fs::dir_create(output_dir_final)
 
-  filenames <- fs::dir_ls(download_url, type = "file") # this may appear as a singular character vector, but since it is a named char, you can use it as a list in subsequent map functions (ie it wont map over each character in the string, but rather treat the whole string as one element to map over)
+  filenames <- fs::dir_ls(download_url, type = "any", recurse=TRUE) # this may appear as a singular character vector, but since it is a named char, you can use it as a list in subsequent map functions (ie it wont map over each character in the string, but rather treat the whole string as one element to map over)
 
   message("Testing if Globus netscratch URL contains files")
   length(filenames) > 0 || stop(
