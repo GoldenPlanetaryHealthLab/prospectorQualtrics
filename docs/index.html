@@ -250,35 +250,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-── [2026-07-17 12:01:23]
+── [2026-07-19 12:01:36]
 Running pipelines ▶ 
 ℹ process_data_pipeline</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Running the maestro pipeline..."
-Test passed with 3 successes 😸.
+Test passed with 3 successes 🎊.
 
   |                                                                            
   |                                                                      |   0%
   |                                                                            
   |======================================================================| 100%
-Test passed with 4 successes 🥇.
-Test passed with 2 successes 😀.
-Test passed with 2 successes 🎉.</code></pre>
+Test passed with 4 successes 🎊.
+Test passed with 2 successes 🥳.
+Test passed with 1 success 😸.</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✖ process_data_pipeline [34.9s]
+<pre><code>✔ process_data_pipeline [20.5s]
 
 
-── [2026-07-17 12:01:23]
-Pipeline execution completed ■ | 34.953 sec elapsed 
-✔ 0 successes | ! 0 warnings | ✖ 1 error | ◼ 1 total
-✖ Use `last_run_errors()` to show pipeline errors.
+── [2026-07-19 12:01:36]
+Pipeline execution completed ■ | 20.545 sec elapsed 
+✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total
 ────────────────────────────────────────────────────────────────────────────────
 
 ── Next scheduled pipelines ❯ 
 Pipe name | Next scheduled run
-• process_data_pipeline | 2026-07-18
+• process_data_pipeline | 2026-07-20
 
 ── Maestro Schedule with 1 pipeline:  
 • Success</code></pre>
@@ -287,7 +286,7 @@ Pipe name | Next scheduled run
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glue</span>(<span class="st">"Last rendered: {Sys.time()}"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Last rendered: 2026-07-17 08:01:58.557023</code></pre>
+<pre><code>Last rendered: 2026-07-19 08:01:56.724805</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -327,14 +326,14 @@ loaded via a namespace (and not attached):
 [21] janitor_2.2.1     snakecase_0.11.1  htmltools_0.5.9   yaml_2.3.12      
 [25] pillar_1.11.1     crayon_1.5.3      R.utils_2.13.0    openssl_2.4.2    
 [29] tidyselect_1.2.1  sjlabelled_1.2.0  digest_0.6.39     stringi_1.8.7    
-[33] purrr_1.2.2       rprojroot_2.1.1   fastmap_1.2.0     archive_1.1.13   
-[37] cli_3.6.6         magrittr_2.0.5    readr_2.2.0       withr_3.0.2      
-[41] waldo_0.6.2       rappdirs_0.3.4    bit64_4.8.2       lubridate_1.9.5  
-[45] timechange_0.4.0  roxygen2_8.0.0    rmarkdown_2.31    httr_1.4.8       
-[49] bit_4.6.0         otel_0.2.0        cellranger_1.1.0  askpass_1.2.1    
-[53] R.methodsS3_1.8.2 hms_1.1.4         evaluate_1.0.5    knitr_1.51       
-[57] rlang_1.2.0       xml2_1.5.2        pkgload_1.5.2     vroom_1.7.1      
-[61] jsonlite_2.0.0    R6_2.6.1          fs_2.1.0         </code></pre>
+[33] rematch2_2.1.2    purrr_1.2.2       rprojroot_2.1.1   fastmap_1.2.0    
+[37] archive_1.1.13    cli_3.6.6         magrittr_2.0.5    readr_2.2.0      
+[41] withr_3.0.2       waldo_0.6.2       rappdirs_0.3.4    bit64_4.8.2      
+[45] lubridate_1.9.5   timechange_0.4.0  roxygen2_8.0.0    rmarkdown_2.31   
+[49] httr_1.4.8        bit_4.6.0         otel_0.2.0        cellranger_1.1.0 
+[53] askpass_1.2.1     R.methodsS3_1.8.2 hms_1.1.4         evaluate_1.0.5   
+[57] knitr_1.51        rlang_1.2.0       xml2_1.5.2        pkgload_1.5.2    
+[61] vroom_1.7.1       jsonlite_2.0.0    R6_2.6.1          fs_2.1.0         </code></pre>
 </div>
 </div>
 
