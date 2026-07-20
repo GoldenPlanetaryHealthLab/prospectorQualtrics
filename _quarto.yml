@@ -2,7 +2,7 @@ project:
   title: "prospectorQualtrics"
   type: website
   render:
-    - notebooks/*.qmd
+    #- notebooks/*.qmd
     - index.qmd
   output-dir: "docs"
 
@@ -17,3 +17,5 @@ website:
       - href: notebooks/01_process_qualtrics_data.qmd
         text: Process Qualtrics Data Internals
 
+execute:
+  freeze: false
