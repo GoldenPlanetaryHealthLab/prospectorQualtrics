@@ -1,0 +1,65 @@
+---
+title: "Orchestrating The Maestro Job with SCRONTAB"
+embed-resources: true
+filters:
+  - sorting-hat
+  - ripper
+extensions:
+  sorting-hat:
+    keep:
+      - r
+    verbose: true
+  ripper:
+    include-yaml: false
+    output-dir: "../pipelines"
+    output-name: "pipelines"
+    script-links-position: "none"
+---
+
+This is a scrontab job that runs every 15 minutes to check for new
+responses in the google sheet and process them accordingly. The job is set up using 
+`maestro` and SCRONTAB, which allows us to schedule and automate the execution of this 
+pipeline.
+
+```{r}
+library(maestro)
+library(glue)
+library(cronR)
+library(here)
+```
+
+We created the job scaffold using `create_maestro`:
+
+```{r}
+#| eval: false
+#| sorting-hat: remove
+#create_maestro(".", overwrite = TRUE)
+```
+
+## What to run
+
+This chunk sets up the pipelines for a `maestro` cronjob.
+`maestro` recognizes the special comments in the function 
+definition to determine the schedule and logging behavior of the 
+job.
+
+### Process Data
+
+```{r}
+#' Ferry Qualtrics Responses To The Gold Mine
+#'
+#' @maestroFrequency 1 day
+#' @maestroStartTime 2026-06-12
+#' @maestroTz US/Eastern
+#' @maestroLogLevel INFO
+process_data_pipeline <- function() {
+
+  print("Running the maestro pipeline...")
+  source(here("R/process_qualtrics_data.R"))
+
+}
+```
+
+This function will be executed according to the schedule defined in the comments. The content of this routine can
+be viewed in the [Process Qualtrics Data Uploads notebook](01_process_qualtrics_data.qmd).
+

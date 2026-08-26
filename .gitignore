@@ -356,3 +356,6 @@ data/
 **/*.quarto_ipynb
 
 /.luarc.json
+
+**/*labbook
+
