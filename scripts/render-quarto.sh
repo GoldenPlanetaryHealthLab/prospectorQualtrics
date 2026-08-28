@@ -24,25 +24,17 @@ fi
 rm -f "$run_log"
 
 if [ "$render_status" -eq 0 ]; then
-  commit_message="cron Quarto render"
+  :
 elif [ "$expected_error" = true ]; then
   printf '%s\n' \
     "Accepted known Quarto NFS cleanup error at $(date --iso-8601=seconds)" \
     >>"$log_file"
-
-  commit_message="cron Quarto render [known NFS cleanup error]"
 else
   printf '%s\n' \
     "Quarto render failed unexpectedly with status $render_status" \
     >>"$log_file"
 
   exit "$render_status"
-fi
-
-if ! git diff --quiet || ! git diff --cached --quiet; then
-  git add -A
-  git commit -m "$commit_message"
-  git push
 fi
 
 exit 0

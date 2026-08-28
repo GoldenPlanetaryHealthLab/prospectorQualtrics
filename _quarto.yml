@@ -2,7 +2,7 @@ project:
   title: "prospectorQualtrics"
   type: website
   render:
-    #- notebooks/*.qmd
+    - notebooks/*.qmd
     - index.qmd
   output-dir: "docs"
 
